@@ -2,10 +2,12 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Layout, Menu, Icon } from 'antd';
 import './pageLayout.css';
+import APIs from '../../common/api.js';
+import axios from 'axios';
 import logoSmall from '../../../assets/images/logoSmall.png';
-import avatar from '../../../assets/images/avatar.png'
+import avatar from '../../../assets/images/avatar.png';
 
-const { Header, Sider, Content } = Layout
+const { Sider, Content } = Layout
 
 @inject('menuStore')
 @observer
@@ -13,30 +15,26 @@ export default class PageLayout extends React.Component {
     constructor(props) {
         super(props);
         setTimeout(() => {
-            this.props.menuStore.setMenuList(
-                [{
-                    name: "会议室1",
-                    icon: "user",
-                    id: "demo1"
-                }, {
-                    name: "会议室2",
-                    icon: "video-camera",
-                    id: "demo2"
-                }, {
-                    name: "会议室3",
-                    icon: "video-camera",
-                    id: "demo3" 
-                }]
-            )
-        },500)
+            axios({
+                method: 'GET',
+                url: APIs.GET_ROOMS,
+                header: {
+                    'Content-Type': 'application/json;charset=utf8',
+                    'userid': sessionStorage.getItem('userid')
+                }
+            }).then(res => {
+                this.props.menuStore.setMenuList(res.data)
+            }).catch(err => {
+                console.warn('error -> ', err)
+            })
+        },300)
     };
 
-    onSkip = (item) => {    // 默认路由跳转
-        this.props.router.push({pathname:`index/report/${item.key}`});
+    onSkip = (item) => {
+        this.props.router.push({pathname:`index/meet/${item.key}`});
     }
     render () {
-        const {children,location} = this.props;
-        console.log(this.props)
+        const {children} = this.props;
         return (
             <Layout>
                 <Sider style={{background:'#fff'}}>
@@ -45,8 +43,8 @@ export default class PageLayout extends React.Component {
                         <header>
                             <img src={avatar}/>
                             <div className="avatar">
-                                <p className="name">{location.query.name}</p>
-                                <p className="email">{location.query.email}</p> 
+                                <p className="name">{ sessionStorage.getItem('nickname') }</p>
+                                <p className="email">{ sessionStorage.getItem('email') }</p>
                             </div>
                             
                         </header>
@@ -55,7 +53,7 @@ export default class PageLayout extends React.Component {
                         {
                             this.props.menuStore.menuList.map((item) => {
                                 return(
-                                    <Menu.Item key={ item.id } className="trigger">
+                                    <Menu.Item key={ item._id } className="trigger">
                                         <span>{ item.name }</span>
                                     </Menu.Item>
                                 )

@@ -6,7 +6,6 @@ export default class Home extends React.Component{
         super(props);
     }
     render(){
-        console.log(height)
         return (
             <div style={styles.content}>
                <h5>点击左侧房间，预定会议室</h5>

@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+  </head>
+  <body>
+    <!--<button onclick="sendMessage()">send</button>-->
+    <!--<input type="file" id="input" multiple="multiple" />-->
+    <script>
+      
+      var socket = io('http://10.8.1.44:3000');
+      socket.on('hello', function(data) {
+        if (data.state) {
+          document.body.style.backgroundColor = 'green'
+        } else {
+          document.body.style.backgroundColor = 'black'
+        }
+      })
+      document.body.style.backgroundColor = 'black'
+      // function sendMessage() {
+      //   var files = document.getElementById('input').files;
+      //   if (files.length) {
+      //     var formData = new FormData()
+      //     for (var i = 0; i < files.length; i++) {
+      //       var file = files[i]
+      //       formData.append('uploads[]', file, file.name)
+      //       $.ajax({
+      //         url: 'http://10.8.3.65:3000/upload',
+      //         method: 'POST',
+      //         data: formData,
+      //         processData: false,
+      //         contentType: false,
+      //         success: function(dat) {
+      //           console.log('upload success')
+      //         },
+      //         xhr: function() {
+      //           var xhr = new XMLHttpRequest()
+      //           xhr.upload.addEventListener('progress', function(evt) {
+      //             if (evt.lengthComputable) {
+      //               var percentComplete = evt.loaded / evt.total
+      //               console.log(percentComplete)
+      //             }
+      //           }, false)
+      //           return xhr
+      //         }
+      //       })
+      //     }
+      //   }
+      // }
+    </script>
+    
+  </body>
+</html>

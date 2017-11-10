@@ -2,21 +2,39 @@ import React from 'react';
 import { Form, Icon, Input, Button,message,notification } from 'antd';
 import LoginMain from '../../../assets/images/logoMain.png';
 const FormItem = Form.Item;
+import axios from 'axios';
+import APIs from '../../common/api.js';
 
 class Login extends React.Component {
 	constructor(props){
 		super(props)
 	}
 	handleSubmit = (e) => {
-		let email = e.target.email.value;
-        let password = e.target.password.value;
-        if(email === 'admin' && password === '123') {
-            this.props.router.push({pathname:'/index',query:{email:email,name:password}})
-        }else{
+        const data = {
+            "email": e.target.email.value,
+            "nickname": e.target.password.value
+        }
+        if(!data) {
             notification.warning({
                 message: '邮箱或者姓名不对'
             })
+            return false
         }
+        axios({
+            url:APIs.POST_SIGNUP,
+            method: "POST",
+            data:data
+        }).then(res => {
+            sessionStorage.setItem('nickname',res.data.nickname)
+            sessionStorage.setItem('email',res.data.email)
+            sessionStorage.setItem('userid',res.data._id)
+            this.props.router.push({pathname:'/index'})
+        }).catch(err => {
+            notification.warning({
+                message: '邮箱或者姓名不对'
+            })
+            console.warn("error -> ",err)
+        })
 	}
 	render() {
         const { getFieldDecorator } = this.props.form;
@@ -38,7 +56,7 @@ class Login extends React.Component {
                         {getFieldDecorator('password', {
                             rules: [{ required: true, message: '请输入姓名!' }],
                         })(
-                            <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="password" placeholder="请输入姓名" />
+                            <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="text" placeholder="请输入姓名" />
                         )}
                     </FormItem>
                     <FormItem>
@@ -64,5 +82,4 @@ const Style = {
         textAlign:'center'
     }
 }
-
 export default Form.create()(Login);

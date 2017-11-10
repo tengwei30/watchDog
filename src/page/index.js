@@ -9,7 +9,6 @@ export default class AppContainer extends React.Component {
     shouldComponentUpdate () {
         return false
     }
-
     render () {
         return (
             <Provider {...this.props.appStore}>
