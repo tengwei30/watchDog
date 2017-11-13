@@ -1,4 +1,3 @@
-// import { hashHistory, Router, Route } from 'react-router'
 import Home from '../page/Home/index';
 import PageLayout from '../page/PageLayout';
 import NoMatch from '../page/NoMatch';

@@ -1,18 +1,23 @@
 import React from 'react';
+import { Button, Icon } from 'antd';
 import times from '../../../common/timeConfig.js';
 import axios from 'axios';
 import APIs from '../../../common/api.js';
+import AddIcon from '../../../../assets/images/iconAddGrey.png';
 import moment from 'moment';
+import DModal from '../Modal/Modal.js';
+import Header from '../Header/Header.jsx';
+import './Chart.css';
 const roomId = '58f98fcf9d570c8583074629'
 
 export default class DTable extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            weekDay: []
+            weekDay: [],
+            visible: false
         }
     }
-
     componentDidMount() {
         this._getData()
     }
@@ -27,7 +32,6 @@ export default class DTable extends React.Component {
         }).then(res => {
             return res.data.splice(0,7)
         }).then(res => {
-            console.log(res)
             res.data = res.map((week) => {
                 return {
                     date: moment(week[0].startTime).format('dddd'),
@@ -41,92 +45,82 @@ export default class DTable extends React.Component {
             console.warn("error->",err)
         })
     }
+
+    showCreateRoom = () => {
+        this.setState({
+            visible:true
+        })
+    }
+    handleCancel = () => {
+        this.setState({ visible: false });
+    }
+
     render() {
         return (
-            <div style={{display: 'flex',width:'100%',height:'100%'}}>
-                <div style={{flex:1,display:'flex',flexDirection:'column',backgroundColor:'#f5f6f7',padding:'60px 30px 30px 30px'}}>
-                    <div style={styles.calendar}>
-                        <div style={styles.content}>
-                            <div style={styles.timeBlock}>
-                                <div style={{borderBottom: '3px solid #f3f3f3', height: 21,width:'100%',paddingBottom:'48px'}}></div>
+            <div>
+                {/*------ header -----*/}
+                <Header />
+                {/*------- room -------*/}
+                <div className="btnDate">
+                    <p>2017年11月</p>
+                    <p>
+                        <Button disabled>
+                            <Icon type="left" />上一周
+                        </Button>
+                        <Button>
+                            下一周<Icon type="right" />
+                        </Button>
+                    </p>
+                </div>
+                <div className="Chart">
+                    <div className="CtContent">
+                        <div className="calendar">
+                            <div className="content">
+                                <div className="timeBlock">
+                                    <div style={{borderBottom: '3px solid #f3f3f3', height: 21,width:'100%',paddingBottom:'48px'}}></div>
+                                    {
+                                        times.map((item,key) => {
+                                            return(
+                                                <div key={key} className="clock">{item}</div>
+                                            )
+                                        })
+                                    }
+                                </div>
                                 {
-                                    times.map((item,key) => {
-                                        return(
-                                            <div key={key} style={styles.clock}>{item}</div>
+                                    this.state.weekDay.map((week,outerIndex) => {
+                                        return (
+                                            <div className="weekday" key={outerIndex}>
+                                                <div className="weekdayHeader">
+                                                    {week.date}
+                                                </div>
+                                                {
+                                                    week.blocks.map((block,innerIndex) => {
+                                                        return (
+                                                            <div key={innerIndex} className="timeSingleBlock">
+                                                                <div className="create" onClick={this.showCreateRoom}>
+                                                                    <div className="makeMeet">
+                                                                        <img src={AddIcon} />
+                                                                        预定
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
+                                            </div>
                                         )
                                     })
                                 }
                             </div>
-                            {
-                                this.state.weekDay.map((week,outerIndex) => {
-                                    return (
-                                        <div style={styles.weekday} key={outerIndex}>
-                                            <div style={styles.weekdayHeader}>
-                                                {week.date}
-                                            </div>
-                                            {
-                                                week.blocks.map((block,innerIndex) => {
-                                                    return (
-                                                        <div key={innerIndex} style={styles.timeSingleBlock}>
-                                                            <div style={{color:'#ccc'}}>预定</div>
-                                                        </div>
-                                                    )
-                                                })
-                                            }
-                                        </div>
-                                    )
-                                })
-                            }
                         </div>
                     </div>
+                    {/*------- dialog --------*/}
+                    <DModal
+                        visible = { this.state.visible }
+                        handleCancel = {this.handleCancel}
+                    />
                 </div>
             </div>
         )
-    }
-}
-
-const styles = {
-    calendar: {
-        width: '100%',
-        backgroundColor: '#fff',
-        borderRadius: 4,
-        overflow: 'auto',
-        flex: 1
-    },
-    content: {
-        display:'flex'
-    },
-    timeBlock: {
-        flex: 1,
-        flexDirection: 'row-reverse'
-    },
-    clock: {
-        display: 'flex',
-        height: 100,
-        justifyContent: 'center',
-        color: '#bebebe',
-        fontSize: 14,
-        borderBottom: '1px solid #f3f3f3',
-        borderRight: '1px solid #f3f3f3',
-        paddingTop: 10
-    },
-    weekday: {
-        flex: 1,
-        flexDirection: 'row-reverse'
-    },
-    weekdayHeader: {
-        borderBottom: '3px solid #f3f3f3',
-        textAlign:'center',
-        padding: '15px 0'
-    },
-    timeSingleBlock: {
-        display: 'flex',
-        borderRight: '1px solid #f3f3f3',
-        height: 50,
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#fff',
-        cursor: 'pointer',
-        borderBottom: '1px solid #f3f3f3'
     }
 }

@@ -18,7 +18,6 @@ let init = () => {
     try {
         const routes = require('./routers/index').default;
         mobx.useStrict(true)
-        console.log(routes)
         ReactDOM.render(
             <AppContainer appStore={appStore()} routes={routes}/>,
             MOUNT_NODE
