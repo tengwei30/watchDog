@@ -15,13 +15,18 @@ export default class DTable extends React.Component {
         super(props)
         this.state = {
             weekDay: [],
-            visible: false
+            visible: false,
+            roomId: this.props.params.id
         }
     }
     componentDidMount() {
-        this._getData()
+        this._getData(this.state.roomId)
     }
-    _getData = () => {
+    componentWillReceiveProps(nextProps,nextState) {
+        this._getData(nextProps.params.id)
+        debugger;
+    }
+    _getData = (roomId) => {
         axios({
             method: "GET",
             url: APIs.GET_ROOM_ORDERS.replace(':roomId', roomId),
@@ -30,6 +35,7 @@ export default class DTable extends React.Component {
                 'userid': sessionStorage.getItem('userid')
             }
         }).then(res => {
+            console.log('res', res)
             return res.data.splice(0,7)
         }).then(res => {
             res.data = res.map((week) => {

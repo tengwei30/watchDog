@@ -31,6 +31,7 @@ export default class PageLayout extends React.Component {
     };
 
     onSkip = (item) => {
+        const roomId = item.key;
         this.props.router.push({pathname:`index/meet/${item.key}`});
     }
     render () {
