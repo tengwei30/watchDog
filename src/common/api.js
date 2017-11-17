@@ -1,13 +1,10 @@
-const domain = 'http://10.8.3.211:3000';
+const domain = 'http://10.8.8.8:7010';
 
 const APIs = {
-    POST_SIGNUP: '/signup',
-    GET_ME: '/me',
-    POST_CREATE_ROOM: '/room',
-    GET_ROOMS: '/rooms',
-    POST_CREATE_ROOM_ORDER: '/roomstatus',
-    GET_ROOM_ORDERS: '/roomStatus?roomId=:roomId',
-    DELETE_ROOM_STATUS: '/roomStatus?startTime=:startTime',
+    GET_ROOMS: '/meeting/all-meeting-room',
+    GET_ROOM_ORDERS: '/state/meeting-state/room/:roomId',
+    DELETE_ROOM_STATUS: '/state/meeting-state/room/:roomId/state/:stateId',
+    PUT_ROOM_STATUS: '/state/meeting-state'
 };
 
 const addDomain = api => domain + api;

@@ -1,12 +1,14 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { Layout, Menu, Icon } from 'antd';
+import {autorun} from 'mobx';
+import { Layout, Menu, Icon, Select } from 'antd';
 import './pageLayout.css';
 import APIs from '../../common/api.js';
 import axios from 'axios';
 import logoSmall from '../../../assets/images/logoSmall.png';
 import avatar from '../../../assets/images/avatar.png';
 
+const Option = Select.Option;
 const { Sider, Content } = Layout
 
 @inject('menuStore')
@@ -29,7 +31,9 @@ export default class PageLayout extends React.Component {
             })
         },300)
     };
-
+    SelectChange = (value) => {
+        this.props.menuStore.setSelectStr(value)
+    }
     onSkip = (item) => {
         const roomId = item.key;
         this.props.router.push({pathname:`index/meet/${item.key}`});
@@ -50,11 +54,20 @@ export default class PageLayout extends React.Component {
                             
                         </header>
                     </div>
+                    <Select
+                        showSearch
+                        style={{width: 160,marginLeft: 15,marginBottom: 15}}
+                        defaultValue="会议室"
+                        onChange={this.SelectChange}
+                    >
+                        <Option value="meeting">会议室</Option>
+                        <Option value="face">面试室</Option>
+                    </Select>
                     <Menu mode="inline" onClick = { this.onSkip }>
                         {
-                            this.props.menuStore.menuList.map((item) => {
+                            this.props.menuStore.ListData.map((item) => {
                                 return(
-                                    <Menu.Item key={ item._id } className="trigger">
+                                    <Menu.Item key={ item.id } className="trigger">
                                         <span>{ item.name }</span>
                                     </Menu.Item>
                                 )

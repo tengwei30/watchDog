@@ -8,48 +8,17 @@ import moment from 'moment';
 import DModal from '../Modal/Modal.js';
 import Header from '../Header/Header.jsx';
 import './Chart.css';
-const roomId = '58f98fcf9d570c8583074629'
 
 export default class DTable extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            weekDay: [],
+            weekDay: ['星期一','星期二','星期三','星期四','星期五','星期六','星期七'],
             visible: false,
-            roomId: this.props.params.id
         }
     }
     componentDidMount() {
-        this._getData(this.state.roomId)
-    }
-    componentWillReceiveProps(nextProps,nextState) {
-        this._getData(nextProps.params.id)
-        debugger;
-    }
-    _getData = (roomId) => {
-        axios({
-            method: "GET",
-            url: APIs.GET_ROOM_ORDERS.replace(':roomId', roomId),
-            headers: {
-                'Content-Type': 'application/json;charset=utf8',
-                'userid': sessionStorage.getItem('userid')
-            }
-        }).then(res => {
-            console.log('res', res)
-            return res.data.splice(0,7)
-        }).then(res => {
-            res.data = res.map((week) => {
-                return {
-                    date: moment(week[0].startTime).format('dddd'),
-                    blocks: week
-                }
-            })
-            this.setState({
-                weekDay: res.data
-            })
-        }).catch(err => {
-            console.warn("error->",err)
-        })
+        console.log(moment().day(0).format('YYYY-MM-DD'))
     }
 
     showCreateRoom = () => {
@@ -58,7 +27,9 @@ export default class DTable extends React.Component {
         })
     }
     handleCancel = () => {
-        this.setState({ visible: false });
+        this.setState({
+            visible: false
+        });
     }
 
     render() {
@@ -85,7 +56,7 @@ export default class DTable extends React.Component {
                                 <div className="timeBlock">
                                     <div style={{borderBottom: '3px solid #f3f3f3', height: 21,width:'100%',paddingBottom:'48px'}}></div>
                                     {
-                                        times.map((item,key) => {
+                                        times[0].map((item,key) => {
                                             return(
                                                 <div key={key} className="clock">{item}</div>
                                             )
@@ -93,16 +64,16 @@ export default class DTable extends React.Component {
                                     }
                                 </div>
                                 {
-                                    this.state.weekDay.map((week,outerIndex) => {
+                                    this.state.weekDay.map((item,key) => {
                                         return (
-                                            <div className="weekday" key={outerIndex}>
+                                            <div className="weekday" key={key}>
                                                 <div className="weekdayHeader">
-                                                    {week.date}
+                                                    { item }
                                                 </div>
                                                 {
-                                                    week.blocks.map((block,innerIndex) => {
+                                                    times[1].map((item,key) => {
                                                         return (
-                                                            <div key={innerIndex} className="timeSingleBlock">
+                                                            <div key={key} className="timeSingleBlock">
                                                                 <div className="create" onClick={this.showCreateRoom}>
                                                                     <div className="makeMeet">
                                                                         <img src={AddIcon} />

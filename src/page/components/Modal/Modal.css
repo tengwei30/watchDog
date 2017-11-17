@@ -9,5 +9,6 @@
     background-color: rgb(242,242,242);
     color:rgb(182,182,182);
 }
-
-
+.ant-modal-content .ant-modal-body .ant-form-item {
+    margin-bottom: 10px
+}
