@@ -3,20 +3,39 @@ import { Modal, Button, Form, Input,Select, Col } from 'antd';
 const FormItem = Form.Item;
 import moment from 'moment';
 const Option = Select.Option;
-import times from '../../../common/timeConfig.js';
 import './Modal.css';
+import axios from 'axios';
+import APIs from '../../../common/api.js';
 
 class showModal extends React.Component{
     constructor(props) {
         super(props);
         this.state ={
-            loading:false,
+            loading:false
         }
     }
     handleSubmit = (e) => {
+        let body = {
+            userId: '',
+            day: `${this.props.modalTimes.day}`,
+            roomId: '1'
+        }
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log(values);
+                let data = Object.assign(body,values)
+                axios({
+                    method: 'PUT',
+                    url: APIs.PUT_ROOM_STATUS,
+                    data: data,
+                    header: {
+                        'Content-Type': 'application/json;charset=utf8'
+                    }
+                }).then(res => {
+                    window.reload()
+                    console.info(res)
+                }).catch(err => {
+                    console.warn(err)
+                })
             }
         });
         this.setState({ loading: true });
@@ -48,11 +67,6 @@ class showModal extends React.Component{
             >
                 <Form onSubmit={this.handleSubmit}>
                     <FormItem>
-                        {getFieldDecorator('meetTheme')(
-                            <Input placeholder="预定主题" />
-                        )}
-                    </FormItem>
-                    <FormItem>
                         <Col span={11}>
                             <FormItem>
                                 {getFieldDecorator('beginTime')(
@@ -60,13 +74,16 @@ class showModal extends React.Component{
                                     placeholder="开始时间"
                                     onChange={this.handleSelectChangeBegin}
                                     >
-                                    {
-                                       times[1].map((item,index) => {
-                                            return (
-                                                <Option value={`${item}`} key={index}>{item}</Option>
+                                   {
+                                      (this.props.modalTimes.times) ? (
+                                        this.props.modalTimes.times.map(item => {
+                                            return(
+                                               <Option key={moment(item.time).format('YYYY-MM-DD HH:mm:ss')}>{moment(item.time).format('HH:mm')}</Option>
                                             )
+                                           
                                         })
-                                    }
+                                       ) : (null)
+                                   }
                                     </Select>
                                 )}
                             </FormItem>
@@ -83,13 +100,16 @@ class showModal extends React.Component{
                                     placeholder="结束时间"
                                     onChange={this.handleSelectChangeEnd}
                                     >
-                                    {
-                                        times[1].map((item,index) => {
-                                            return (
-                                                <Option value={`${item}`} key={index}>{item}</Option>
-                                            )
-                                        })
-                                    }
+                                        {
+                                            (this.props.modalTimes.times) ? (
+                                                this.props.modalTimes.times.map(item => {
+                                                    return(
+                                                    <Option key={moment(item.time).format('YYYY-MM-DD HH:mm:ss')}>{moment(item.time).format('HH:mm')}</Option>
+                                                    )
+                                                
+                                                })
+                                            ) : (null)
+                                        } 
                                     </Select>
                                 )}
                             </FormItem>
@@ -97,13 +117,8 @@ class showModal extends React.Component{
                         
                     </FormItem>
                     <FormItem>
-                        {getFieldDecorator('userPeople')(
-                            <Input placeholder="使用人" />
-                        )}
-                    </FormItem>
-                    <FormItem>
-                        {getFieldDecorator('memo')(
-                            <Input placeholder="备注" />
+                        {getFieldDecorator('description')(
+                            <Input placeholder="请添写使用者和主题" />
                         )}
                     </FormItem>
                     <FormItem span={12}>

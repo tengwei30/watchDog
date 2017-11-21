@@ -5,11 +5,14 @@ import iconLocation from '../../../../assets/images/iconLocation.png';
 import iconComputer from '../../../../assets/images/iconComputer.png';
 
 export default class Header extends React.Component{
+    constructor (props) {
+        super(props)
+    }
     render() {
         return (
             <div className="Header">
                 <h1>小树林</h1><br />
-                <div className="HdContent">
+                {/* <div className="HdContent">
                     <span style={{paddingRight: 15}}>
                         <img src={iconUser} alt=""/>
                         <i>
@@ -24,7 +27,7 @@ export default class Header extends React.Component{
                         <img src={iconComputer} alt=""/>
                         <i>设备：<em>电视、音响</em></i>
                     </span>
-                </div>
+                </div> */}
             </div>
         )
     }

@@ -68,12 +68,21 @@
 .makeMeet{
     display: block;
     width: 98%;
-    border-radius: 5px;
+    color: #fff;
+    text-align: center;
+}
+.makeMeet:hover {
     color: rgb(165,165,165);
 }
 .makeMeet img{
     display: inline-block;
     padding-right:2px;
+}
+.makeMeet.active {
+    color: #fff;
+    background-color: rgb(86,158,231);
+    text-align: center;
+    padding-top: 0
 }
 
 /* 点击按钮 */

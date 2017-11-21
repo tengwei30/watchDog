@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import {autorun} from 'mobx';
+// import {autorun} from 'mobx';
 import { Layout, Menu, Icon, Select } from 'antd';
 import './pageLayout.css';
 import APIs from '../../common/api.js';
@@ -11,7 +11,7 @@ import avatar from '../../../assets/images/avatar.png';
 const Option = Select.Option;
 const { Sider, Content } = Layout
 
-@inject('menuStore')
+@inject('menuStore','chartStore')
 @observer
 export default class PageLayout extends React.Component {
     constructor(props) {
@@ -21,8 +21,7 @@ export default class PageLayout extends React.Component {
                 method: 'GET',
                 url: APIs.GET_ROOMS,
                 header: {
-                    'Content-Type': 'application/json;charset=utf8',
-                    'userid': sessionStorage.getItem('userid')
+                    'Content-Type': 'application/json;charset=utf8'
                 }
             }).then(res => {
                 this.props.menuStore.setMenuList(res.data)
@@ -31,12 +30,13 @@ export default class PageLayout extends React.Component {
             })
         },300)
     };
-    SelectChange = (value) => {
+    SelectChange = (value) => { // 选择会议室还是面试间
         this.props.menuStore.setSelectStr(value)
     }
-    onSkip = (item) => {
-        const roomId = item.key;
+    onSkip = (item) => { // 跳转
+        this.props.chartStore.setRoomId(item.key)
         this.props.router.push({pathname:`index/meet/${item.key}`});
+        localStorage.setItem('key',item.key)
     }
     render () {
         const {children} = this.props;

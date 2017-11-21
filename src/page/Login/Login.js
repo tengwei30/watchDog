@@ -20,21 +20,24 @@ class Login extends React.Component {
             })
             return false
         }
-        axios({
-            url:APIs.POST_SIGNUP,
-            method: "POST",
-            data:data
-        }).then(res => {
-            sessionStorage.setItem('nickname',res.data.nickname)
-            sessionStorage.setItem('email',res.data.email)
-            sessionStorage.setItem('userid',res.data._id)
-            this.props.router.push({pathname:'/index'})
-        }).catch(err => {
-            notification.warning({
-                message: '邮箱或者姓名不对'
-            })
-            console.warn("error -> ",err)
-        })
+        this.props.router.push({pathname:'/index'})
+        sessionStorage.setItem('nickname',data.nickname)
+        sessionStorage.setItem('email',data.email)
+        // axios({
+        //     url:APIs.POST_SIGNUP,
+        //     method: "POST",
+        //     data:data
+        // }).then(res => {
+        //     sessionStorage.setItem('nickname',res.data.nickname)
+        //     sessionStorage.setItem('email',res.data.email)
+        //     sessionStorage.setItem('userid',res.data._id)
+        //     this.props.router.push({pathname:'/index'})
+        // }).catch(err => {
+        //     notification.warning({
+        //         message: '邮箱或者姓名不对'
+        //     })
+        //     console.warn("error -> ",err)
+        // })
 	}
 	render() {
         const { getFieldDecorator } = this.props.form;

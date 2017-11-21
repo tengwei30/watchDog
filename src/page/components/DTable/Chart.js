@@ -1,10 +1,11 @@
 import React from 'react';
 import { Button, Icon } from 'antd';
 import times from '../../../common/timeConfig.js';
+import weekTimes from '../../../common/weekTimes';
 import axios from 'axios';
 import APIs from '../../../common/api.js';
 import AddIcon from '../../../../assets/images/iconAddGrey.png';
-import moment from 'moment';
+import moment, { weekdays } from 'moment';
 import DModal from '../Modal/Modal.js';
 import Header from '../Header/Header.jsx';
 import './Chart.css';
@@ -13,41 +14,97 @@ export default class DTable extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            weekDay: ['星期一','星期二','星期三','星期四','星期五','星期六','星期七'],
+            initWeeks: [],
             visible: false,
+            weekTrue: true,
+            title: '',
+            modalTimes: {},
+            showOrder: false,
+            weeks: []
         }
     }
-    componentDidMount() {
-        console.log(moment().day(0).format('YYYY-MM-DD'))
-    }
-
-    showCreateRoom = () => {
+    componentWillMount() {
         this.setState({
-            visible:true
+            initWeeks: weekTimes
         })
     }
-    handleCancel = () => {
+    componentDidMount() {
+        this.setState({
+            weeks: this.state.initWeeks
+        })
+        console.log(this.state.initWeeks)
+        setTimeout(() => {
+            this.getRoomOrder(this.props.params.id)
+        },10)
+        
+    }
+    // componentWillReceiveProps(nextProps) {
+    //     this.getRoomOrder(nextProps.params.id)
+    // }
+    getRoomOrder = (roomId) => {
+        axios({
+            method: 'get',
+            url: `${APIs.GET_ROOM_ORDERS}${roomId}`
+        }).then(res => {
+            let data = [];
+            for (let i in res.data) {
+                res.data[i].beginTime = new Date(moment(res.data[i].beginTime)).getTime()
+                res.data[i].endTime = new Date(moment(res.data[i].endTime)).getTime()
+            }
+            return res.data
+        }).then(res => {
+            this.state.weeks.map((item,index) => {
+                item['times'].map((singleItem,index) => {
+                    if(res.length !== 0) {
+                        res.map(val => {
+                            if(singleItem.time >= val['beginTime'] && singleItem.time <= val['endTime'] ) {
+                                singleItem.used = true;
+                                singleItem = Object.assign(singleItem,val)
+                            }
+                        })
+                    }else {
+                        singleItem.used = false;
+                    }
+                    
+                })
+            })
+            setTimeout(() => {
+                this.setState({
+                    weeks: this.state.weeks
+                })
+            },100)
+        }).catch(err => {
+            console.warn('error --->', err)
+        })
+    }
+    showCreateRoom = (item) => {
+        this.setState({
+            visible:true,
+            modalTimes: item
+        })
+    }
+    handleCancel = () => {  // 隐藏弹窗
         this.setState({
             visible: false
         });
+    }
+    switch = () => { // 本周/下周
+        this.setState({
+            weekTrue: !this.state.weekTrue,
+        })
     }
 
     render() {
         return (
             <div>
                 {/*------ header -----*/}
-                <Header />
+                <Header 
+                    title = {this.state.title}
+                />
                 {/*------- room -------*/}
                 <div className="btnDate">
-                    <p>2017年11月</p>
-                    <p>
-                        <Button disabled>
-                            <Icon type="left" />上一周
-                        </Button>
-                        <Button>
-                            下一周<Icon type="right" />
-                        </Button>
-                    </p>
+                    <p>今天：{moment().format('YYYY-MM-DD')}</p>
+                    <p><Button type="primary" onClick={this.switch}>{this.state.weekTrue ? '下周' : '本周' }</Button></p>
                 </div>
                 <div className="Chart">
                     <div className="CtContent">
@@ -64,29 +121,85 @@ export default class DTable extends React.Component {
                                     }
                                 </div>
                                 {
-                                    this.state.weekDay.map((item,key) => {
-                                        return (
-                                            <div className="weekday" key={key}>
-                                                <div className="weekdayHeader">
-                                                    { item }
-                                                </div>
-                                                {
-                                                    times[1].map((item,key) => {
-                                                        return (
-                                                            <div key={key} className="timeSingleBlock">
-                                                                <div className="create" onClick={this.showCreateRoom}>
-                                                                    <div className="makeMeet">
-                                                                        <img src={AddIcon} />
-                                                                        预定
+                                    this.state.weekTrue ? (
+                                        this.state.weeks.slice(0,7).map((item) => {
+                                            return (
+                                                <div className="weekday" key={item.day}>
+                                                    <div className="weekdayHeader">
+                                                        { item.week }
+                                                    </div>
+                                                    {
+                                                        item['times'].map((val,key) => {
+                                                            if (val.used) {
+                                                                return (
+                                                                    <div key={val.time} className="timeSingleBlock">
+                                                                        <div className="create"
+                                                                        onClick={() => {this.showCreateRoom(item)}}
+                                                                        >
+                                                                            <div className="makeMeet active">
+                                                                                <span>已预定</span>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </div>
-                                                        )
-                                                    })
-                                                }
-                                            </div>
-                                        )
-                                    })
+                                                                ) 
+                                                            } else {
+                                                                return (
+                                                                    <div key={val.time} className="timeSingleBlock">
+                                                                        <div className="create"
+                                                                        onClick={() => {this.showCreateRoom(item)}}
+                                                                        >
+                                                                            <div className="makeMeet">
+                                                                                预定
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )
+                                                            }
+                                                        })
+                                                    }
+                                                </div>
+                                            )
+                                        })
+                                    ) : (
+                                        this.state.weeks.slice(7,14).map((item) => {
+                                            return (
+                                                <div className="weekday" key={item.day}>
+                                                    <div className="weekdayHeader">
+                                                        { item.week }
+                                                    </div>
+                                                    {
+                                                        item['times'].map((val,key) => {
+                                                            if (val.used) {
+                                                                return (
+                                                                    <div key={val.time} className="timeSingleBlock">
+                                                                        <div className="create"
+                                                                        onClick={() => {this.showCreateRoom(item)}}
+                                                                        >
+                                                                            <div className="makeMeet active">
+                                                                                已预定
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                ) 
+                                                            } else {
+                                                                return (
+                                                                    <div key={val.time} className="timeSingleBlock">
+                                                                        <div className="create"
+                                                                        onClick={() => {this.showCreateRoom(item)}}
+                                                                        >
+                                                                            <div className="makeMeet">
+                                                                                预定
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )
+                                                            }
+                                                        })
+                                                    }
+                                                </div>
+                                            )
+                                        })
+                                    )
                                 }
                             </div>
                         </div>
@@ -95,6 +208,7 @@ export default class DTable extends React.Component {
                     <DModal
                         visible = { this.state.visible }
                         handleCancel = {this.handleCancel}
+                        modalTimes = {this.state.modalTimes}
                     />
                 </div>
             </div>
