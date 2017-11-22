@@ -3,7 +3,7 @@ const domain = 'http://10.8.8.8:7010';
 const APIs = {
     GET_ROOMS: '/meeting/all-meeting-room',
     GET_ROOM_ORDERS: '/state/meeting-state/room/',
-    DELETE_ROOM_STATUS: '/state/meeting-state/room/:roomId/state/:stateId',
+    DELETE_ROOM_STATUS: '/state/meeting-state/room/',
     PUT_ROOM_STATUS: '/state/meeting-state'
 };
 

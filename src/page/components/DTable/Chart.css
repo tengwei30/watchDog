@@ -67,7 +67,7 @@
 }
 .makeMeet{
     display: block;
-    width: 98%;
+    width: 97%;
     color: #fff;
     text-align: center;
 }
@@ -78,11 +78,13 @@
     display: inline-block;
     padding-right:2px;
 }
-.makeMeet.active {
+.active {
+    width: 97%;
     color: #fff;
     background-color: rgb(86,158,231);
     text-align: center;
-    padding-top: 0
+    padding-top: 0;
+    /* height: 49px; */
 }
 
 /* 点击按钮 */

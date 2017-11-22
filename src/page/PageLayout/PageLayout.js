@@ -31,7 +31,8 @@ export default class PageLayout extends React.Component {
         },300)
     };
     SelectChange = (value) => { // 选择会议室还是面试间
-        this.props.menuStore.setSelectStr(value)
+        this.props.menuStore.setSelectStr(value);
+        sessionStorage.setItem('SelectStr',value)
     }
     onSkip = (item) => { // 跳转
         this.props.chartStore.setRoomId(item.key)
@@ -57,7 +58,7 @@ export default class PageLayout extends React.Component {
                     <Select
                         showSearch
                         style={{width: 160,marginLeft: 15,marginBottom: 15}}
-                        defaultValue="会议室"
+                        defaultValue={sessionStorage.getItem('SelectStr') || '会议室'}
                         onChange={this.SelectChange}
                     >
                         <Option value="meeting">会议室</Option>
@@ -66,11 +67,20 @@ export default class PageLayout extends React.Component {
                     <Menu mode="inline" onClick = { this.onSkip }>
                         {
                             this.props.menuStore.ListData.map((item) => {
-                                return(
-                                    <Menu.Item key={ item.id } className="trigger">
-                                        <span>{ item.name }</span>
-                                    </Menu.Item>
-                                )
+                                if(localStorage.getItem('key') == item.id) {
+                                    return(
+                                        <Menu.Item key={ item.id } className="trigger Layoutactive">
+                                            <span>{ item.name }</span>
+                                        </Menu.Item> 
+                                    )
+                                }else {
+                                    return(
+                                        <Menu.Item key={ item.id } className="trigger">
+                                            <span>{ item.name }</span>
+                                        </Menu.Item> 
+                                    )  
+                                }
+                                
                             })
                         }
                     </Menu>

@@ -14,7 +14,7 @@ module.exports = {
         //  端口号
         port: 8016,
         //  是否自动打开浏览器
-        autoOpenBrowser: true,
+        autoOpenBrowser: false,
         assetsSubDirectory: 'assets',
         assetsPublicPath: '/',
         env: '"development"'

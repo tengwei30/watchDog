@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 class MenuStore {
     @observable menuList = [];
-    @observable SelectStr = 'meeting'
+    @observable SelectStr = sessionStorage.getItem('SelectStr') || 'meeting'
 
     @computed
     get ListData() {

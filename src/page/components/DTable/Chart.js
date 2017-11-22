@@ -5,7 +5,7 @@ import weekTimes from '../../../common/weekTimes';
 import axios from 'axios';
 import APIs from '../../../common/api.js';
 import AddIcon from '../../../../assets/images/iconAddGrey.png';
-import moment, { weekdays } from 'moment';
+import moment from 'moment';
 import DModal from '../Modal/Modal.js';
 import Header from '../Header/Header.jsx';
 import './Chart.css';
@@ -14,33 +14,24 @@ export default class DTable extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            initWeeks: [],
             visible: false,
             weekTrue: true,
             title: '',
             modalTimes: {},
             showOrder: false,
-            weeks: []
+            weeks: weekTimes,
+            roomId: this.props.params.id,
+            val: {}
         }
     }
-    componentWillMount() {
-        this.setState({
-            initWeeks: weekTimes
-        })
-    }
     componentDidMount() {
-        this.setState({
-            weeks: this.state.initWeeks
-        })
-        console.log(this.state.initWeeks)
-        setTimeout(() => {
-            this.getRoomOrder(this.props.params.id)
-        },10)
-        
+        this.getRoomOrder(this.state.roomId)
     }
-    // componentWillReceiveProps(nextProps) {
-    //     this.getRoomOrder(nextProps.params.id)
-    // }
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.params.id) {
+            window.location.reload()
+        }
+    }
     getRoomOrder = (roomId) => {
         axios({
             method: 'get',
@@ -77,10 +68,11 @@ export default class DTable extends React.Component {
             console.warn('error --->', err)
         })
     }
-    showCreateRoom = (item) => {
+    showCreateRoom = (item,val) => {
         this.setState({
             visible:true,
-            modalTimes: item
+            modalTimes: item,
+            val: val
         })
     }
     handleCancel = () => {  // 隐藏弹窗
@@ -131,13 +123,18 @@ export default class DTable extends React.Component {
                                                     {
                                                         item['times'].map((val,key) => {
                                                             if (val.used) {
+                                                                console.log(val)
                                                                 return (
                                                                     <div key={val.time} className="timeSingleBlock">
                                                                         <div className="create"
-                                                                        onClick={() => {this.showCreateRoom(item)}}
+                                                                        onClick={() => {this.showCreateRoom(item,val)}}
                                                                         >
-                                                                            <div className="makeMeet active">
-                                                                                <span>已预定</span>
+                                                                            <div className="active">
+                                                                                {
+                                                                                    (val.time == val.beginTime) ? (
+                                                                                        <span>{val.description}</span>
+                                                                                    ) : (<span>.</span>)
+                                                                                }
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -146,7 +143,7 @@ export default class DTable extends React.Component {
                                                                 return (
                                                                     <div key={val.time} className="timeSingleBlock">
                                                                         <div className="create"
-                                                                        onClick={() => {this.showCreateRoom(item)}}
+                                                                        onClick={() => {this.showCreateRoom(item,val)}}
                                                                         >
                                                                             <div className="makeMeet">
                                                                                 预定
@@ -173,10 +170,14 @@ export default class DTable extends React.Component {
                                                                 return (
                                                                     <div key={val.time} className="timeSingleBlock">
                                                                         <div className="create"
-                                                                        onClick={() => {this.showCreateRoom(item)}}
+                                                                        onClick={() => {this.showCreateRoom(item,val)}}
                                                                         >
-                                                                            <div className="makeMeet active">
-                                                                                已预定
+                                                                            <div className="active">
+                                                                                {
+                                                                                    (val.time == val.beginTime) ? (
+                                                                                        <span>已预定</span>
+                                                                                    ) : (<span>.</span>)
+                                                                                }
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -185,7 +186,7 @@ export default class DTable extends React.Component {
                                                                 return (
                                                                     <div key={val.time} className="timeSingleBlock">
                                                                         <div className="create"
-                                                                        onClick={() => {this.showCreateRoom(item)}}
+                                                                        onClick={() => {this.showCreateRoom(item,val)}}
                                                                         >
                                                                             <div className="makeMeet">
                                                                                 预定
@@ -209,6 +210,8 @@ export default class DTable extends React.Component {
                         visible = { this.state.visible }
                         handleCancel = {this.handleCancel}
                         modalTimes = {this.state.modalTimes}
+                        roomId = {this.state.roomId}
+                        val = {this.state.val}
                     />
                 </div>
             </div>

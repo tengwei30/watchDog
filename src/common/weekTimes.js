@@ -13,7 +13,6 @@ for(let i = 0; i < 14; i++) {
     for(let j=0;j< 18;j++) {
         nowWeekDays[i]['times'][j] = {'used': false,'time': startTime + during * j} 
     }
-    // console.log(nowWeekDays)
 }
 
 

@@ -8,6 +8,13 @@
 
 .trigger:hover {
   color: #108ee9;
+  border-right: 1px solid #108ee9;
+  background: rgba(65,140,237,0.2)
+}
+.Layoutactive {
+  color: #108ee9;
+  border-right: 1px solid #108ee9;
+  background: rgba(65,140,237,0.2)
 }
 
 .logo {
