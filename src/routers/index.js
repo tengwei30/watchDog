@@ -7,7 +7,7 @@ import Meet from '../page/Meet';
 // 在这里面进行路由界面的添加
 
 const createRoutes = [{
-    path: '/login',
+    path: '/',
     component: Login,
 },{
     path: '/index',
