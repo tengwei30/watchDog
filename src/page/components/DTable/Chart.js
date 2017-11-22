@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Icon } from 'antd';
 import times from '../../../common/timeConfig.js';
-import weekTimes from '../../../common/weekTimes';
+import getWeekDays from '../../../common/weekTimes';
 import axios from 'axios';
 import APIs from '../../../common/api.js';
 import AddIcon from '../../../../assets/images/iconAddGrey.png';
@@ -19,18 +19,38 @@ export default class DTable extends React.Component {
             title: '',
             modalTimes: {},
             showOrder: false,
-            weeks: weekTimes,
+            weeks: [],
             roomId: this.props.params.id,
-            val: {}
+            val: {},
+            key: 1
         }
     }
     componentDidMount() {
-        this.getRoomOrder(this.state.roomId)
+        this.setState({
+            weeks: getWeekDays()
+        },() => {
+            this.getRoomOrder(this.state.roomId)
+        })
     }
-    componentWillReceiveProps(nextProps) {
-        if(nextProps.params.id) {
-            window.location.reload()
+    componentWillReceiveProps(nextProps,nextState) {
+        this.setState({
+            weeks: getWeekDays()
+        },() => {
+            this.getRoomOrder(nextProps.params.id)
+        })
+    }
+    shouldComponentUpdate(nextProps,nextState) {
+        if(!nextState.visible && nextState.key === 0) {
+            this.setState({
+                weeks: getWeekDays()
+            },() => {
+                this.getRoomOrder(this.props.params.id)
+            })
         }
+        this.setState({
+            key:1
+        })
+        return true
     }
     getRoomOrder = (roomId) => {
         axios({
@@ -77,7 +97,8 @@ export default class DTable extends React.Component {
     }
     handleCancel = () => {  // 隐藏弹窗
         this.setState({
-            visible: false
+            visible: false,
+            key: 0
         });
     }
     switch = () => { // 本周/下周
@@ -85,14 +106,11 @@ export default class DTable extends React.Component {
             weekTrue: !this.state.weekTrue,
         })
     }
-
     render() {
         return (
             <div>
                 {/*------ header -----*/}
-                <Header 
-                    title = {this.state.title}
-                />
+                <Header />
                 {/*------- room -------*/}
                 <div className="btnDate">
                     <p>今天：{moment().format('YYYY-MM-DD')}</p>

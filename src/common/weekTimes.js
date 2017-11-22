@@ -14,6 +14,13 @@ for(let i = 0; i < 14; i++) {
         nowWeekDays[i]['times'][j] = {'used': false,'time': startTime + during * j} 
     }
 }
+// localStorage.setItem('nowWeekDays',nowWeekDays)
 
+function getWeekDays() {
+    if (!localStorage.getItem('weekDays')) {
+       localStorage.setItem('weekDays', JSON.stringify(nowWeekDays))
+    }
+    return JSON.parse(localStorage.getItem('weekDays'))
+}
 
-export default nowWeekDays
+export default getWeekDays

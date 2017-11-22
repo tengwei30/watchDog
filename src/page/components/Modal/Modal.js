@@ -11,7 +11,7 @@ class showModal extends React.Component{
     constructor(props) {
         super(props);
         this.state ={
-            loading:false
+            loading:false,
         }
     }
     handleSubmit = (e) => {
@@ -54,16 +54,15 @@ class showModal extends React.Component{
                         message: '创建成功',
                     });
                     setTimeout(() => {
-                        window.location.reload()
-                    },1000)
-                    console.info(res)
+                        this.props.handleCancel()
+                    },300)
                 }).catch(err => {
                     notification.open({
                         message: '创建失败',
                     });
                     setTimeout(() => {
-                        window.location.reload()
-                    },1000) 
+                        this.props.handleCancel()
+                    },300)
                     console.warn(err)
                 })
             }
@@ -87,9 +86,8 @@ class showModal extends React.Component{
                 message: '删除成功',
             });
             setTimeout(() => {
-                window.location.reload()
-            },1000)
-            console.log(1)
+                this.props.handleCancel()
+            },300)
         }).catch(err => {
             console.warn('error --->', err)
         })
