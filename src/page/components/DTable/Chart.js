@@ -123,7 +123,6 @@ export default class DTable extends React.Component {
                                                     {
                                                         item['times'].map((val,key) => {
                                                             if (val.used) {
-                                                                console.log(val)
                                                                 return (
                                                                     <div key={val.time} className="timeSingleBlock">
                                                                         <div className="create"

@@ -58,6 +58,12 @@ class showModal extends React.Component{
                     },1000)
                     console.info(res)
                 }).catch(err => {
+                    notification.open({
+                        message: '创建失败',
+                    });
+                    setTimeout(() => {
+                        window.location.reload()
+                    },1000) 
                     console.warn(err)
                 })
             }

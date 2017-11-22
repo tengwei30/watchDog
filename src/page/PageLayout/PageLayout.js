@@ -33,11 +33,13 @@ export default class PageLayout extends React.Component {
     SelectChange = (value) => { // 选择会议室还是面试间
         this.props.menuStore.setSelectStr(value);
         sessionStorage.setItem('SelectStr',value)
+        sessionStorage.setItem('title',value)
     }
     onSkip = (item) => { // 跳转
         this.props.chartStore.setRoomId(item.key)
         this.props.router.push({pathname:`index/meet/${item.key}`});
         localStorage.setItem('key',item.key)
+        sessionStorage.setItem('title',item.item.props.children.props.children)
     }
     render () {
         const {children} = this.props;

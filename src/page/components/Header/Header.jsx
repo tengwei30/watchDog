@@ -11,7 +11,7 @@ export default class Header extends React.Component{
     render() {
         return (
             <div className="Header">
-                <h1>小树林</h1><br />
+                <h1>{sessionStorage.getItem('title')}</h1><br />
                 {/* <div className="HdContent">
                     <span style={{paddingRight: 15}}>
                         <img src={iconUser} alt=""/>
