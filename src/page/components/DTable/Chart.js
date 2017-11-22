@@ -68,7 +68,7 @@ export default class DTable extends React.Component {
                 item['times'].map((singleItem,index) => {
                     if(res.length !== 0) {
                         res.map(val => {
-                            if(singleItem.time >= val['beginTime'] && singleItem.time <= val['endTime'] ) {
+                            if(singleItem.time >= val['beginTime'] && singleItem.time < val['endTime'] ) {
                                 singleItem.used = true;
                                 singleItem = Object.assign(singleItem,val)
                             }
