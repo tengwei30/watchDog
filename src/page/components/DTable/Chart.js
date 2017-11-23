@@ -146,13 +146,17 @@ export default class DTable extends React.Component {
                                                                         <div className="create"
                                                                         onClick={() => {this.showCreateRoom(item,val)}}
                                                                         >
-                                                                            <div className="active">
-                                                                                {
-                                                                                    (val.time == val.beginTime) ? (
-                                                                                        <span>{val.description}</span>
-                                                                                    ) : (<span>.</span>)
-                                                                                }
-                                                                            </div>
+                                                                            {
+                                                                                (val.time == val.beginTime) ? (
+                                                                                    <div className="active" style={{borderTop:'2px solid #fff'}}>
+                                                                                    <span>{val.description}</span>
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    <div className="active">
+                                                                                        <span>.</span>
+                                                                                    </div>
+                                                                                )
+                                                                            }
                                                                         </div>
                                                                     </div>
                                                                 ) 
@@ -189,13 +193,17 @@ export default class DTable extends React.Component {
                                                                         <div className="create"
                                                                         onClick={() => {this.showCreateRoom(item,val)}}
                                                                         >
-                                                                            <div className="active">
-                                                                                {
-                                                                                    (val.time == val.beginTime) ? (
-                                                                                        <span>已预定</span>
-                                                                                    ) : (<span>.</span>)
-                                                                                }
-                                                                            </div>
+                                                                            {
+                                                                                (val.time == val.beginTime) ? (
+                                                                                    <div className="active" style={{borderTop:'2px solid #fff'}}>
+                                                                                    <span>{val.description}</span>
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    <div className="active">
+                                                                                        <span>.</span>
+                                                                                    </div>
+                                                                                )
+                                                                            }
                                                                         </div>
                                                                     </div>
                                                                 ) 
