@@ -109,7 +109,7 @@ class showModal extends React.Component{
                         <Col span={11}>
                             <FormItem>
                                 {getFieldDecorator('beginTime',{
-                                    initialValue: this.props.val.beginTime ? moment(this.props.val.beginTime).format('YYYY-MM-DD HH:mm:ss') : '开始时间'
+                                    initialValue: this.props.val.beginTime ? moment(this.props.val.beginTime).format('YYYY-MM-DD HH:mm:ss') : moment(this.props.val.time).format('YYYY-MM-DD HH:mm:ss')
                                 })(
                                     <Select
                                     placeholder="开始时间"
@@ -137,7 +137,7 @@ class showModal extends React.Component{
                         <Col span={11}>
                             <FormItem>
                                 {getFieldDecorator('endTime',{
-                                    initialValue: this.props.val.endTime ? moment(this.props.val.endTime).format('YYYY-MM-DD HH:mm:ss') : '结束时间'
+                                    initialValue: this.props.val.endTime ? moment(this.props.val.endTime).format('YYYY-MM-DD HH:mm:ss') : moment(this.props.val.time).format('YYYY-MM-DD HH:mm:ss')
                                 })(
                                     <Select
                                     placeholder="结束时间"
