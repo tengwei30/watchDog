@@ -24,6 +24,17 @@ export default class DTable extends React.Component {
     componentDidMount() {
         autorun(() => {
             this._getRoomOrder()
+            this._roomStates()
+        })
+    }
+    _roomStates () {
+        let _this = this
+        socket.on('roomStates',function(data) {
+            for (let i in data.states) {
+                data.states[i].beginTime = new Date(moment(data.states[i].beginTime)).getTime()
+                data.states[i].endTime = new Date(moment(data.states[i].endTime)).getTime()
+            }
+            _this.props.chartStore.setresponseData(data.states)
         })
     }
     _getRoomOrder () {
