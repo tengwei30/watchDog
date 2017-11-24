@@ -14,8 +14,7 @@ for(let i = 0; i < 14; i++) {
         nowWeekDays[i]['times'][j] = {'used': false,'time': startTime + during * j} 
     }
 }
-// localStorage.setItem('nowWeekDays',nowWeekDays)
-
+// 存本地一份 防止数据共享
 function getWeekDays() {
     if (!localStorage.getItem('weekDays')) {
        localStorage.setItem('weekDays', JSON.stringify(nowWeekDays))
