@@ -7,4 +7,7 @@
         }
         .ant-layout{
             height: 100%;
-        }</style><link href=./assets/css/app.c63d9369dffa7a1334290a42f8be2c4b.css rel=stylesheet></head><body><script src=https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js></script><script>var socket = io('http://10.8.8.8:7010')</script><div id=app></div><script type=text/javascript src=./assets/js/manifest.8321fa9a893320782f98.js></script><script type=text/javascript src=./assets/js/vendor.950affaf5f4a2677efd5.js></script><script type=text/javascript src=./assets/js/app.5a865222864d83f5b3b1.js></script></body></html>
+        }</style><link href=./assets/css/app.c63d9369dffa7a1334290a42f8be2c4b.css rel=stylesheet></head><body><script src=https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js></script><script>var socket = io('http://10.8.8.8:7010')
+        socket.on('roomStates',function(data) {
+            console.log(data)
+        })</script><div id=app></div><script type=text/javascript src=./assets/js/manifest.0d853718e5993615edfe.js></script><script type=text/javascript src=./assets/js/vendor.9be7e79474fc770e7b9d.js></script><script type=text/javascript src=./assets/js/app.83d26703d82ffe293fd5.js></script></body></html>
