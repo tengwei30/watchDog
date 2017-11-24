@@ -10,6 +10,7 @@ import DModal from '../Modal/Modal.js';
 import Header from '../Header/Header.jsx';
 import './Chart.css';
 
+
 export default class DTable extends React.Component {
     constructor(props) {
         super(props)

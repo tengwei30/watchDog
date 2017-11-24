@@ -4,6 +4,16 @@ import _ from 'lodash'
 class ChartStore {
     @observable responseData = []
     @observable roomId = null
+    @observable weekTrue = true
+
+    @computed
+    get columnData() {
+    }
+
+    @computed
+    get weekTrue() {
+        this.weekTrue = !this.weekTrue
+    }
 
     @action
     setresponseData(data) {
@@ -14,7 +24,6 @@ class ChartStore {
     setRoomId(num) {
         this.roomId = num
     }
-
     
 }
 
