@@ -1,18 +1,35 @@
 import { observable,action,computed } from 'mobx';
-import _ from 'lodash'
+import * as mobx from 'mobx'
+import times from '../common/timeConfig.js';
+import getWeekDays from '../common/weekTimes';
+import moment from 'moment';
+import _ from 'lodash';
 
 class ChartStore {
+    @observable defaultTimes = getWeekDays()
     @observable responseData = []
     @observable roomId = null
-    @observable weekTrue = true
+    @observable times = times
 
     @computed
     get columnData() {
-    }
-
-    @computed
-    get weekTrue() {
-        this.weekTrue = !this.weekTrue
+        let weeks = []
+        mobx.toJS(this.defaultTimes).forEach((item, i) => {
+            item['times'].forEach((singleItem, j) => {
+                if (_.isEmpty(this.responseData)) {
+                    singleItem.used = false
+                }else {
+                    mobx.toJS(this.responseData).forEach( (val, k) => {
+                        if(singleItem.time >= val['beginTime'] && singleItem.time < val['endTime'] ) {
+                            singleItem.used = true;
+                            singleItem = Object.assign(singleItem,val)
+                        }
+                    })
+                }
+            })
+            weeks.push(item)
+        })
+        return weeks
     }
 
     @action

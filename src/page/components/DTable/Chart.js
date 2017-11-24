@@ -185,7 +185,8 @@ export default class DTable extends React.Component {
                                             return (
                                                 <div className="weekday" key={item.day}>
                                                     <div className="weekdayHeader">
-                                                        { item.week }
+                                                        <span>{ item.day }</span>
+                                                        <span>{ item.week }</span>
                                                     </div>
                                                     {
                                                         item['times'].map((val,key) => {
