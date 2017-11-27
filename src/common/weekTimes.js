@@ -17,7 +17,11 @@ for(let i = 0; i < 14; i++) {
 // 存本地一份 防止数据共享
 function getWeekDays() {
     if (!localStorage.getItem('weekDays')) {
-       localStorage.setItem('weekDays', JSON.stringify(nowWeekDays))
+        localStorage.setItem('weekDays', JSON.stringify(nowWeekDays))
+    }else {
+       if(JSON.parse(localStorage.getItem('weekDays')) !== moment().day(1).format('YYYY-MM-DD')){
+            localStorage.setItem('weekDays', JSON.stringify(nowWeekDays))
+        }
     }
     return JSON.parse(localStorage.getItem('weekDays'))
 }
