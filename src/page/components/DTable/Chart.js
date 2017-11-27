@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Icon } from 'antd';
+import { Button, Icon,notification } from 'antd';
 import { inject, observer } from 'mobx-react';
 import { autorun } from 'mobx';
 import getWeekDays from '../../../common/weekTimes';
@@ -17,7 +17,6 @@ export default class DTable extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            weekTrue: true,
             key: 1
         }
     }
@@ -27,7 +26,7 @@ export default class DTable extends React.Component {
             this._roomStates()
         })
     }
-    _roomStates () {
+    _roomStates () { // 设置io同步
         let _this = this
         socket.on('roomStates',function(data) {
             for (let i in data.states) {
@@ -67,20 +66,26 @@ export default class DTable extends React.Component {
         return true
     }
     showCreateRoom = (item,val) => {
+        const nowTime = new Date(moment().format('YYYY-MM-DD HH:mm:ss')).getTime()
+        if(val.time < nowTime) {
+            notification.open({
+                message: '不可预定过去的时间～',
+            });
+            return false;
+        }
+        this.props.modalStore.setVisible(true)
         this.props.modalStore.setmodalData(item)
         this.props.modalStore.setisModalData(val)
-        this.props.modalStore.setVisible(true)
+        
     }
     handleCancel = () => {  // 隐藏弹窗
-        this.props.modalStore.setVisible(false) 
+        this.props.modalStore.setVisible(false)
         this.setState({
             key: 0
         });
     }
     switch = () => { // 本周/下周
-        this.setState({
-            weekTrue: !this.state.weekTrue,
-        })
+        this.props.chartStore.setSwitchTime(!this.props.chartStore.switchTime)
     }
     _renderColumn() {
         return (
@@ -97,7 +102,7 @@ export default class DTable extends React.Component {
                         }
                     </div>
                     {
-                        this.state.weekTrue ? (
+                        this.props.chartStore.switchTime ? (
                             this.props.chartStore.columnData.slice(0,7).map((item) => {
                                 return (
                                     <div className="weekday" key={item.day}>
@@ -117,7 +122,6 @@ export default class DTable extends React.Component {
                                         
                                         {
                                             item['times'].map((val,key) => {
-                                                console.log('time',item,'now',moment().format('YYYY-MM-DD'))
                                                 if (val.used) {
                                                     return (
                                                         <div key={val.time} className="timeSingleBlock">
@@ -127,7 +131,7 @@ export default class DTable extends React.Component {
                                                                 {
                                                                     (val.time == val.beginTime) ? (
                                                                         <div className="active" style={{borderTop:'2px solid #fff'}}>
-                                                                        <span>{val.description}</span>
+                                                                        <span className="description">{val.description}</span>
                                                                         </div>
                                                                     ) : (
                                                                         <div className="active">
@@ -175,7 +179,7 @@ export default class DTable extends React.Component {
                                                                 {
                                                                     (val.time == val.beginTime) ? (
                                                                         <div className="active" style={{borderTop:'2px solid #fff'}}>
-                                                                        <span>{val.description}</span>
+                                                                            <span className="description">{val.description}</span>
                                                                         </div>
                                                                     ) : (
                                                                         <div className="active">
@@ -218,7 +222,7 @@ export default class DTable extends React.Component {
                 {/*------- room -------*/}
                 <div className="btnDate">
                     <p>今天：{moment().locale('zh-cn').format('dddd')}</p>
-                    <p><Button type="primary" onClick={this.switch}>{this.state.weekTrue ? '下周' : '本周' }</Button></p>
+                    <p><Button type="primary" onClick={this.switch}>{this.props.chartStore.switchTime ? '下周' : '本周' }</Button></p>
                 </div>
                 <div className="Chart">
                     <div className="CtContent">
@@ -229,9 +233,7 @@ export default class DTable extends React.Component {
                     {/*------- dialog --------*/}
                     <DModal
                         handleCancel = {this.handleCancel}
-                        modalTimes = {this.state.modalTimes}
                         roomId = {this.props.params.id}
-                        val = {this.state.val}
                     />
                 </div>
             </div>

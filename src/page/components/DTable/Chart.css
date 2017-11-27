@@ -87,10 +87,18 @@
     width: 97%;
     color: #fff;
     background-color: rgb(86,158,231);
-    text-align: center;
     padding-top: 0;
-    /* height: 49px; */
+    text-align: center;
+    margin: 0 auto
 }
+.active .description {
+    width: 125px;
+    display: block;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+
 
 /* 点击按钮 */
 .btnDate{
