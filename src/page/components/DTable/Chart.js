@@ -101,12 +101,23 @@ export default class DTable extends React.Component {
                             this.props.chartStore.columnData.slice(0,7).map((item) => {
                                 return (
                                     <div className="weekday" key={item.day}>
-                                        <div className="weekdayHeader">
-                                            <span>{ item.day }</span>
-                                            <span>{ item.week }</span>
-                                        </div>
+                                        {
+                                            (moment().format('YYYY-MM-DD') == item.day)?(
+                                                <div className="weekdayHeader">
+                                                    <span style={{color:'rgb(112,157,228)'}}>{ item.day }</span>
+                                                    <span style={{color:'rgb(112,157,228)'}}>{ item.week }</span>
+                                                </div>
+                                            ) : (
+                                                <div className="weekdayHeader">
+                                                    <span>{ item.day }</span>
+                                                    <span>{ item.week }</span>
+                                                </div>
+                                            )
+                                        }
+                                        
                                         {
                                             item['times'].map((val,key) => {
+                                                console.log('time',item,'now',moment().format('YYYY-MM-DD'))
                                                 if (val.used) {
                                                     return (
                                                         <div key={val.time} className="timeSingleBlock">
@@ -206,7 +217,7 @@ export default class DTable extends React.Component {
                 <Header />
                 {/*------- room -------*/}
                 <div className="btnDate">
-                    <p>今天：{moment().format('YYYY-MM-DD')}</p>
+                    <p>今天：{moment().locale('zh-cn').format('dddd')}</p>
                     <p><Button type="primary" onClick={this.switch}>{this.state.weekTrue ? '下周' : '本周' }</Button></p>
                 </div>
                 <div className="Chart">
