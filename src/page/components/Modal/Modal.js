@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Button, Form, Input,Select, Col, notification } from 'antd';
+import { Modal, Button, Form, Input,Select, Col, notification, Popconfirm, message } from 'antd';
 import { inject, observer } from 'mobx-react';
 import { autorun } from 'mobx';
 import moment from 'moment';
@@ -7,6 +7,8 @@ import axios from 'axios';
 import APIs from '../../../common/api.js';
 const FormItem = Form.Item;
 const Option = Select.Option;
+const { TextArea } = Input;
+const confirm = Modal.confirm;
 import './Modal.css';
 
 @inject('modalStore')
@@ -82,24 +84,36 @@ class showModal extends React.Component{
     DeleteMessage = () => {
         const roomId = this.props.roomId;
         const stateId = this.props.modalStore.isModalData.id;
-        axios.delete(`${APIs.DELETE_ROOM_STATUS}${roomId}/state/${stateId}`).then(res => {
-            notification.open({
-                message: '删除成功',
-            });
-            setTimeout(() => {
-                this.props.handleCancel()
-            },300)
-        }).catch(err => {
-            console.warn('error --->', err)
-        })
+        const _this = this;
+        setTimeout(() => {
+            _this.props.handleCancel()
+        },10)
+        confirm({
+            title: '你确定要删除此条会议记录?',
+            okText: '确定',
+            okType: 'danger',
+            cancelText: '取消',
+            onOk() {
+                axios.delete(`${APIs.DELETE_ROOM_STATUS}${roomId}/state/${stateId}`).then(res => {
+                    notification.open({
+                        message: '删除成功',
+                    });
+                }).catch(err => {
+                    console.warn('error --->', err)
+                })
+            },
+            onCancel() {
+                console.log('onCancel')
+            },
+          });
     }
     render() {
-        console.log(this.props.modalStore)
         const { getFieldDecorator } = this.props.form;
+        const { isModalData, modalData, visible } = this.props.modalStore
         return (
             <Modal
-                visible={ this.props.modalStore.visible }
-                title="新建预定"
+                visible={ visible }
+                title= {isModalData.id ? "修改预定" : "新建预定"}
                 onOk={this.handleOk}
                 onCancel={this.props.handleCancel}
                 footer={[]}
@@ -110,15 +124,15 @@ class showModal extends React.Component{
                         <Col span={11}>
                             <FormItem>
                                 {getFieldDecorator('beginTime',{
-                                    initialValue: this.props.modalStore.isModalData.beginTime ? moment(this.props.modalStore.isModalData.beginTime).format('YYYY-MM-DD HH:mm:ss') : moment(this.props.modalStore.isModalData.time).format('YYYY-MM-DD HH:mm:ss')
+                                    initialValue: isModalData.beginTime ? moment(isModalData.beginTime).format('YYYY-MM-DD HH:mm:ss') : moment(isModalData.time).format('YYYY-MM-DD HH:mm:ss')
                                 })(
                                     <Select
                                     placeholder="开始时间"
                                     onChange={this.handleSelectChangeBegin}
                                     >
                                    {
-                                      (this.props.modalStore.modalData.times) ? (
-                                        this.props.modalStore.modalData.times.map(item => {
+                                      (modalData.times) ? (
+                                        modalData.times.map(item => {
                                             return(
                                                <Option key={moment(item.time).format('YYYY-MM-DD HH:mm:ss')}>{moment(item.time).format('HH:mm')}</Option>
                                             )
@@ -137,15 +151,15 @@ class showModal extends React.Component{
                         <Col span={11}>
                             <FormItem>
                                 {getFieldDecorator('endTime',{
-                                    initialValue: this.props.modalStore.isModalData.endTime ? moment(this.props.modalStore.isModalData.endTime).format('YYYY-MM-DD HH:mm:ss') : moment(this.props.modalStore.isModalData.time).format('YYYY-MM-DD HH:mm:ss')
+                                    initialValue: isModalData.endTime ? moment(isModalData.endTime).format('YYYY-MM-DD HH:mm:ss') : moment(isModalData.time).format('YYYY-MM-DD HH:mm:ss')
                                 })(
                                     <Select
                                     placeholder="结束时间"
                                     onChange={this.handleSelectChangeEnd}
                                     >
                                         {
-                                            (this.props.modalStore.modalData.times) ? (
-                                                this.props.modalStore.modalData.times.map(item => {
+                                            (modalData.times) ? (
+                                                modalData.times.map(item => {
                                                     return(
                                                     <Option key={moment(item.time).format('YYYY-MM-DD HH:mm:ss')}>{moment(item.time).format('HH:mm')}</Option>
                                                     )
@@ -161,14 +175,14 @@ class showModal extends React.Component{
                     </FormItem>
                     <FormItem>
                         {getFieldDecorator('description',{
-                            initialValue: this.props.modalStore.isModalData.description ? this.props.modalStore.isModalData.description : '' 
+                            initialValue: isModalData.description ? isModalData.description : '' 
                         })(
-                            <Input placeholder="请添写使用者和主题" />
+                            <TextArea style={{resize:'none'}} rows={2} placeholder="请添写使用者和主题" />
                         )}
                     </FormItem>
                     <FormItem span={12}>
                         {
-                            (this.props.modalStore.isModalData.id) ? (
+                            (isModalData.id) ? (
                                 <div>
                                     <Col span={11}>
                                         <Button style={{width:'100%'}} type="default" onClick={this.DeleteMessage}>

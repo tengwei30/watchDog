@@ -10,6 +10,7 @@ class ChartStore {
     @observable responseData = []
     @observable roomId = null
     @observable times = times
+    @observable switchTime = true;
 
     @computed
     get columnData() {
@@ -42,6 +43,10 @@ class ChartStore {
         this.roomId = num
     }
     
+    @action
+    setSwitchTime (boolean) {
+        this.switchTime = boolean
+    }
 }
 
 export default ChartStore

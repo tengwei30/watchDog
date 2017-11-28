@@ -38,6 +38,9 @@ export default class PageLayout extends React.Component {
     onSkip = (item) => { // 跳转
         this.props.chartStore.setRoomId(item.key)
         this.props.router.push({pathname:`index/meet/${item.key}`});
+        setTimeout(() => {   
+            this.props.chartStore.setSwitchTime(true)
+        },10)
         localStorage.setItem('key',item.key)
         sessionStorage.setItem('title',item.item.props.children.props.children)
     }
