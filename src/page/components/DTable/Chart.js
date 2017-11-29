@@ -16,9 +16,6 @@ import './Chart.css';
 export default class DTable extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {
-            key: 1
-        }
     }
     componentDidMount() {
         autorun(() => {
@@ -52,19 +49,6 @@ export default class DTable extends React.Component {
                 console.warn('error ---> ', err)
             })
     }
-    shouldComponentUpdate(nextProps,nextState) {
-        if(!nextState.visible && nextState.key === 0) {
-            this.setState({
-                weeks: getWeekDays()
-            },() => {
-                this._getRoomOrder(this.props.params.id)
-            })
-        }
-        this.setState({
-            key:1
-        })
-        return true
-    }
     showCreateRoom = (item,val) => {
         const nowTime = new Date(moment().format('YYYY-MM-DD HH:mm:ss')).getTime()
         if(val.time < nowTime) {
@@ -76,13 +60,6 @@ export default class DTable extends React.Component {
         this.props.modalStore.setVisible(true)
         this.props.modalStore.setmodalData(item)
         this.props.modalStore.setisModalData(val)
-        
-    }
-    handleCancel = () => {  // 隐藏弹窗
-        this.props.modalStore.setVisible(false)
-        this.setState({
-            key: 0
-        });
     }
     switch = () => { // 本周/下周
         this.props.chartStore.setSwitchTime(!this.props.chartStore.switchTime)

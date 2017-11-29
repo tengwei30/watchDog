@@ -17,6 +17,12 @@ class showModal extends React.Component{
     constructor(props) {
         super(props);
     }
+    componentDidMount() {
+        autorun(() => {
+            console.log(this.props.modalStore.modalData)
+            console.log(this.props.modalStore.isModalData)
+        })
+    }
     handleSubmit = (e) => {
         let body = {
             userId: '',
@@ -57,14 +63,15 @@ class showModal extends React.Component{
                         message: '创建成功',
                     });
                     setTimeout(() => {
-                        this.props.handleCancel()
+                        this.handleCancel()
                     },300)
+                    this.props.form.resetFields()
                 }).catch(err => {
                     notification.open({
                         message: '创建失败',
                     });
                     setTimeout(() => {
-                        this.props.handleCancel()
+                        this.handleCancel()
                     },300)
                     console.warn(err)
                 })
@@ -84,9 +91,8 @@ class showModal extends React.Component{
     DeleteMessage = () => {
         const roomId = this.props.roomId;
         const stateId = this.props.modalStore.isModalData.id;
-        const _this = this;
         setTimeout(() => {
-            _this.props.handleCancel()
+            this.handleCancel()
         },10)
         confirm({
             title: '你确定要删除此条会议记录?',
@@ -105,106 +111,115 @@ class showModal extends React.Component{
             onCancel() {
                 console.log('onCancel')
             },
-          });
+        });
+        this.props.form.resetFields()
     }
-    render() {
+    handleCancel = () => {
+        this.props.modalStore.setVisible(false)
+        this.props.form.resetFields()
+    }
+    _renderForm () {
         const { getFieldDecorator } = this.props.form;
         const { isModalData, modalData, visible } = this.props.modalStore
+        return (
+            <Form onSubmit={this.handleSubmit}>
+            <FormItem>
+                <Col span={11}>
+                    <FormItem>
+                        {getFieldDecorator('beginTime',{
+                            initialValue: isModalData.beginTime ? moment(isModalData.beginTime).format('YYYY-MM-DD HH:mm:ss') : moment(isModalData.time).format('YYYY-MM-DD HH:mm:ss')
+                        })(
+                            <Select
+                            placeholder="开始时间"
+                            onChange={this.handleSelectChangeBegin}
+                            >
+                           {
+                              (modalData.times) ? (
+                                modalData.times.map(item => {
+                                    return(
+                                       <Option key={moment(item.time).format('YYYY-MM-DD HH:mm:ss')}>{moment(item.time).format('HH:mm')}</Option>
+                                    )
+                                })
+                               ) : (null)
+                           }
+                            </Select>
+                        )}
+                    </FormItem>
+                </Col>
+                <Col span={2}>
+                <span style={{ display: 'inline-block', width: '100%', textAlign: 'center' }}>
+                    -
+                </span>
+                </Col>
+                <Col span={11}>
+                    <FormItem>
+                        {getFieldDecorator('endTime',{
+                            initialValue: isModalData.endTime ? moment(isModalData.endTime).format('YYYY-MM-DD HH:mm:ss') : moment(isModalData.time).format('YYYY-MM-DD HH:mm:ss')
+                        })(
+                            <Select
+                            placeholder="结束时间"
+                            onChange={this.handleSelectChangeEnd}
+                            >
+                                {
+                                    (modalData.times) ? (
+                                        modalData.times.map(item => {
+                                            return(
+                                            <Option key={moment(item.time).format('YYYY-MM-DD HH:mm:ss')}>{moment(item.time).format('HH:mm')}</Option>
+                                            )
+                                        
+                                        })
+                                    ) : (null)
+                                } 
+                            </Select>
+                        )}
+                    </FormItem>
+                </Col>
+            </FormItem>
+            <FormItem>
+                {getFieldDecorator('description',{
+                    initialValue: isModalData.description ? isModalData.description : ''
+                })(
+                    <TextArea style={{resize:'none'}} rows={2} placeholder="请添写使用者和主题" />
+                )}
+            </FormItem>
+            <FormItem span={12}>
+                {
+                    (isModalData.id) ? (
+                        <div>
+                            <Col span={11}>
+                                <Button style={{width:'100%'}} type="default" onClick={this.DeleteMessage}>
+                                    删除
+                                </Button>
+                            </Col>
+                            <Col span={2}></Col>
+                            <Col span={11}>
+                                <Button style={{width:'100%'}} type="primary" htmlType="submit">
+                                    提交
+                                </Button>
+                            </Col>
+                        </div>
+                    ): (
+                        <Button style={{width:'100%'}} type="primary" htmlType="submit">
+                            提交
+                        </Button> 
+                    )
+                }
+            </FormItem>
+        </Form>
+        )
+    }
+    render() {
+        const { isModalData, modalData, visible,desc } = this.props.modalStore
         return (
             <Modal
                 visible={ visible }
                 title= {isModalData.id ? "修改预定" : "新建预定"}
                 onOk={this.handleOk}
-                onCancel={this.props.handleCancel}
+                onCancel={this.handleCancel}
                 footer={[]}
                 className="showModal"
             >
-                <Form onSubmit={this.handleSubmit}>
-                    <FormItem>
-                        <Col span={11}>
-                            <FormItem>
-                                {getFieldDecorator('beginTime',{
-                                    initialValue: isModalData.beginTime ? moment(isModalData.beginTime).format('YYYY-MM-DD HH:mm:ss') : moment(isModalData.time).format('YYYY-MM-DD HH:mm:ss')
-                                })(
-                                    <Select
-                                    placeholder="开始时间"
-                                    onChange={this.handleSelectChangeBegin}
-                                    >
-                                   {
-                                      (modalData.times) ? (
-                                        modalData.times.map(item => {
-                                            return(
-                                               <Option key={moment(item.time).format('YYYY-MM-DD HH:mm:ss')}>{moment(item.time).format('HH:mm')}</Option>
-                                            )
-                                        })
-                                       ) : (null)
-                                   }
-                                    </Select>
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span={2}>
-                        <span style={{ display: 'inline-block', width: '100%', textAlign: 'center' }}>
-                            -
-                        </span>
-                        </Col>
-                        <Col span={11}>
-                            <FormItem>
-                                {getFieldDecorator('endTime',{
-                                    initialValue: isModalData.endTime ? moment(isModalData.endTime).format('YYYY-MM-DD HH:mm:ss') : moment(isModalData.time).format('YYYY-MM-DD HH:mm:ss')
-                                })(
-                                    <Select
-                                    placeholder="结束时间"
-                                    onChange={this.handleSelectChangeEnd}
-                                    >
-                                        {
-                                            (modalData.times) ? (
-                                                modalData.times.map(item => {
-                                                    return(
-                                                    <Option key={moment(item.time).format('YYYY-MM-DD HH:mm:ss')}>{moment(item.time).format('HH:mm')}</Option>
-                                                    )
-                                                
-                                                })
-                                            ) : (null)
-                                        } 
-                                    </Select>
-                                )}
-                            </FormItem>
-                        </Col>
-                        
-                    </FormItem>
-                    <FormItem>
-                        {getFieldDecorator('description',{
-                            initialValue: isModalData.description ? isModalData.description : '' 
-                        })(
-                            <TextArea style={{resize:'none'}} rows={2} placeholder="请添写使用者和主题" />
-                        )}
-                    </FormItem>
-                    <FormItem span={12}>
-                        {
-                            (isModalData.id) ? (
-                                <div>
-                                    <Col span={11}>
-                                        <Button style={{width:'100%'}} type="default" onClick={this.DeleteMessage}>
-                                            删除
-                                        </Button>
-                                    </Col>
-                                    <Col span={2}></Col>
-                                    <Col span={11}>
-                                        <Button style={{width:'100%'}} type="primary" htmlType="submit">
-                                            提交
-                                        </Button>
-                                    </Col>
-                                </div>
-                            ): (
-                                <Button style={{width:'100%'}} type="primary" htmlType="submit">
-                                    提交
-                                </Button> 
-                            )
-                        }
-                    </FormItem>
-                    
-                </Form>
+                {this._renderForm()}
             </Modal>
         )
     }
