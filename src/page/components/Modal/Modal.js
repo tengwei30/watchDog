@@ -19,8 +19,8 @@ class showModal extends React.Component{
     }
     componentDidMount() {
         autorun(() => {
-            console.log(this.props.modalStore.modalData)
-            console.log(this.props.modalStore.isModalData)
+            this.props.modalStore.modalData
+            this.props.modalStore.isModalData
         })
     }
     handleSubmit = (e) => {

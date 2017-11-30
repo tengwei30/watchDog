@@ -17,7 +17,7 @@ const renderError = (error) => {
 let init = () => {
     try {
         const routes = require('./routers/index').default;
-        mobx.useStrict(true)
+        mobx.useStrict(false) // mobx 是否启动严格模式
         ReactDOM.render(
             <AppContainer appStore={appStore()} routes={routes}/>,
             MOUNT_NODE

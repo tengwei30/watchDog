@@ -61,9 +61,6 @@ export default class DTable extends React.Component {
         this.props.modalStore.setmodalData(item)
         this.props.modalStore.setisModalData(val)
     }
-    switch = () => { // 本周/下周
-        this.props.chartStore.setSwitchTime(!this.props.chartStore.switchTime)
-    }
     _renderColumn() {
         return (
             <div>
@@ -197,10 +194,6 @@ export default class DTable extends React.Component {
                 {/*------ header -----*/}
                 <Header />
                 {/*------- room -------*/}
-                <div className="btnDate">
-                    <p>今天：{moment().locale('zh-cn').format('dddd')}</p>
-                    <p><Button type="primary" onClick={this.switch}>{this.props.chartStore.switchTime ? '下周' : '本周' }</Button></p>
-                </div>
                 <div className="Chart">
                     <div className="CtContent">
                         <div className="calendar">
@@ -209,7 +202,6 @@ export default class DTable extends React.Component {
                     </div>
                     {/*------- dialog --------*/}
                     <DModal
-                        handleCancel = {this.handleCancel}
                         roomId = {this.props.params.id}
                     />
                 </div>
