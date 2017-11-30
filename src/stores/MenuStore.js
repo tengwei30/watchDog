@@ -32,14 +32,20 @@ class MenuStore {
 
     @computed
     get RoomDetail () { // 获取房间详情信息
-        if(_.isEmpty(this.roomId)) return JSON.parse(sessionStorage.getItem('singleRoomDetail'));
+        let RoomData = {}
+        const url = window.location.href;
+        const num = window.location.href.lastIndexOf('/') + 1
+        // const reg = /(\d+)(?!.\/.)$/
+        if(_.isEmpty(this.roomId)) {
+            this.roomId = url.slice(num)
+            // this.roomId = url.match(reg)[0]
+        }
         this.menuList.map((item, k) => {
             if (this.roomId == item.id) {
-                sessionStorage.setItem('singleRoomDetail', JSON.stringify(item))
+                RoomData = item
             }
         })
-        sessionStorage.getItem('singleRoomDetail')
-        return JSON.parse(sessionStorage.getItem('singleRoomDetail'))
+        return RoomData;
     }
 
     @action

@@ -28,7 +28,6 @@ export default class PageLayout extends React.Component {
         setTimeout(() => { // 跳转完时间默认置为本周  
             this.props.chartStore.setSwitchTime(true)
         },10)
-        localStorage.setItem('key',item.key) // 控制menu 选中状态
     }
     render () {
         const {children, menuStore} = this.props;
@@ -58,7 +57,7 @@ export default class PageLayout extends React.Component {
                     <Menu mode="inline" onClick = { this.onSkip }>
                         {
                             menuStore.ListData.map((item) => {
-                                if(localStorage.getItem('key') == item.id) {
+                                if(menuStore.RoomDetail.id == item.id) {
                                     return(
                                         <Menu.Item key={item.id} className="trigger Layoutactive">
                                             <span>{ item.name }</span>
