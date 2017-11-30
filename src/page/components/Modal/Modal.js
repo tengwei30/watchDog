@@ -33,21 +33,15 @@ class showModal extends React.Component{
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 if(values.description === '') {
-                    notification.open({
-                        message:'使用者和描述不能为空~'
-                    })
+                    message.warning('使用者和描述不能为空~')
                     return false;
                 }
                 if(new Date(moment(values.endTime)).getTime() < new Date(moment(values.beginTime)).getTime()) {
-                    notification.open({
-                        message:'结束时间不能大于开始时间~'
-                    })
+                    message.warning("结束时间不能大于开始时间~")
                     return false; 
                 }
                 if(new Date().getTime() > new Date(moment(values.endTime)).getTime()) {
-                    notification.open({
-                        message:'开始时间不能大于当前时间~'
-                    })
+                    message.warning("开始时间不能大于当前时间~")
                     return false;  
                 }
                 let data = Object.assign(body,values)
@@ -59,17 +53,13 @@ class showModal extends React.Component{
                         'Content-Type': 'application/json;charset=utf8'
                     }
                 }).then(res => {
-                    notification.open({
-                        message: '创建成功',
-                    });
+                    message.success('创建成功~')
                     setTimeout(() => {
                         this.handleCancel()
                     },300)
                     this.props.form.resetFields()
                 }).catch(err => {
-                    notification.open({
-                        message: '创建失败',
-                    });
+                    message.error('创建失败~')
                     setTimeout(() => {
                         this.handleCancel()
                     },300)
@@ -101,9 +91,7 @@ class showModal extends React.Component{
             cancelText: '取消',
             onOk() {
                 axios.delete(`${APIs.DELETE_ROOM_STATUS}${roomId}/state/${stateId}`).then(res => {
-                    notification.open({
-                        message: '删除成功',
-                    });
+                    message.success('删除成功')
                 }).catch(err => {
                     console.warn('error --->', err)
                 })

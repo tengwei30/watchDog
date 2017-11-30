@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Icon,notification } from 'antd';
+import { Button, Icon, message } from 'antd';
 import { inject, observer } from 'mobx-react';
 import { autorun } from 'mobx';
 import getWeekDays from '../../../common/weekTimes';
@@ -52,9 +52,7 @@ export default class DTable extends React.Component {
     showCreateRoom = (item,val) => {
         const nowTime = new Date(moment().format('YYYY-MM-DD HH:mm:ss')).getTime()
         if(val.time < nowTime) {
-            notification.open({
-                message: '不可预定过去的时间～',
-            });
+            message.warning('不可预定过去时间～');
             return false;
         }
         this.props.modalStore.setVisible(true)
