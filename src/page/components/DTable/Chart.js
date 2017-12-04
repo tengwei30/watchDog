@@ -95,25 +95,27 @@ export default class DTable extends React.Component {
                                         {
                                             item['times'].map((val,key) => {
                                                 if (val.used) {
-                                                    return (
-                                                        <div key={val.time} className="timeSingleBlock">
-                                                            <div className="create"
-                                                            onClick={() => {this.showCreateRoom(item,val)}}
-                                                            >
-                                                                {
-                                                                    (val.time == val.beginTime) ? (
-                                                                        <div className="active" style={{borderTop:'2px solid #fff'}}>
-                                                                        <span className="description">{val.description}</span>
-                                                                        </div>
-                                                                    ) : (
-                                                                        <div className="active">
-                                                                            <span>.</span>
-                                                                        </div>
-                                                                    )
-                                                                }
+                                                    if(val.roomId == window.location.href.slice(window.location.href.lastIndexOf('/') + 1)){
+                                                        return (
+                                                            <div key={val.time} className="timeSingleBlock">
+                                                                <div className="create"
+                                                                onClick={() => {this.showCreateRoom(item,val)}}
+                                                                >
+                                                                    {
+                                                                        (val.time == val.beginTime) ? (
+                                                                            <div className="active" style={{borderTop:'2px solid #fff'}}>
+                                                                            <span className="description">{val.description}</span>
+                                                                            </div>
+                                                                        ) : (
+                                                                            <div className="active">
+                                                                                <span>.</span>
+                                                                            </div>
+                                                                        )
+                                                                    }
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    ) 
+                                                        )
+                                                    }  
                                                 } else {
                                                     return (
                                                         <div key={val.time} className="timeSingleBlock">
