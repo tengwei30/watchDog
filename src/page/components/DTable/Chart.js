@@ -26,24 +26,14 @@ export default class DTable extends React.Component {
     _roomStates () { // 设置io同步
         let _this = this
         socket.on('roomStates',function(data) {
-            for (let i in data.states) {
-                data.states[i].beginTime = new Date(moment(data.states[i].beginTime)).getTime()
-                data.states[i].endTime = new Date(moment(data.states[i].endTime)).getTime()
-            }
-            _this.props.chartStore.setresponseData(data.states)
+                _this.props.chartStore.setresponseData(data)
+
         })
     }
     _getRoomOrder () {
         axios(`${APIs.GET_ROOM_ORDERS}${this.props.params.id}`)
             .then(res => {
-            for (let i in res.data) {
-                res.data[i].beginTime = new Date(moment(res.data[i].beginTime)).getTime()
-                res.data[i].endTime = new Date(moment(res.data[i].endTime)).getTime()
-            }
-            return res.data
-            })
-            .then(data => {
-                this.props.chartStore.setresponseData(data)
+            this.props.chartStore.setresponseData(res.data)
             })
             .catch(err => {
                 console.warn('error ---> ', err)
@@ -95,27 +85,25 @@ export default class DTable extends React.Component {
                                         {
                                             item['times'].map((val,key) => {
                                                 if (val.used) {
-                                                    if(val.roomId == window.location.href.slice(window.location.href.lastIndexOf('/') + 1)){
-                                                        return (
-                                                            <div key={val.time} className="timeSingleBlock">
-                                                                <div className="create"
-                                                                onClick={() => {this.showCreateRoom(item,val)}}
-                                                                >
-                                                                    {
-                                                                        (val.time == val.beginTime) ? (
-                                                                            <div className="active" style={{borderTop:'2px solid #fff'}}>
-                                                                            <span className="description">{val.description}</span>
-                                                                            </div>
-                                                                        ) : (
-                                                                            <div className="active">
-                                                                                <span>.</span>
-                                                                            </div>
-                                                                        )
-                                                                    }
-                                                                </div>
+                                                    return (
+                                                        <div key={val.time} className="timeSingleBlock">
+                                                            <div className="create"
+                                                            onClick={() => {this.showCreateRoom(item,val)}}
+                                                            >
+                                                                {
+                                                                    (val.time == val.beginTime) ? (
+                                                                        <div className="active" style={{borderTop:'2px solid #fff'}}>
+                                                                        <span className="description">{val.description}</span>
+                                                                        </div>
+                                                                    ) : (
+                                                                        <div className="active">
+                                                                            <span>.</span>
+                                                                        </div>
+                                                                    )
+                                                                }
                                                             </div>
-                                                        )
-                                                    }  
+                                                        </div>
+                                                    )
                                                 } else {
                                                     return (
                                                         <div key={val.time} className="timeSingleBlock">

@@ -21,7 +21,7 @@ export default class Header extends React.Component{
         const {RoomDetail} = this.props.menuStore
         return (
             <div className="Header">
-                <h1>{RoomDetail.name}</h1><br />
+                <h1>{RoomDetail.name} <span style={{color:"#999",fontSize:18}}> {RoomDetail.description}</span></h1><br />
                 <div className="HdContent">
                     <span style={{paddingRight: 15}}>
                         <img src={iconUser} alt=""/>
