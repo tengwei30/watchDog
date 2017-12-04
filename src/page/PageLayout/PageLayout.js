@@ -53,6 +53,7 @@ export default class PageLayout extends React.Component {
                     >
                         <Option value="meeting">会议室</Option>
                         <Option value="face">面试室</Option>
+                        <Option value="voice">录音室</Option>
                     </Select>
                     <Menu mode="inline" onClick = { this.onSkip }>
                         {
