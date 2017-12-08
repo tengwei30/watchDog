@@ -40,7 +40,7 @@ export default class DTable extends React.Component {
             })
     }
     showCreateRoom = (item,val) => {
-        const nowTime = new Date(moment().format('YYYY-MM-DD HH:mm:ss')).getTime()
+        const nowTime = new Date(moment().format('YYYY-MM-DD HH:mm:ss')).getTime() - 1800000
         if(val.time < nowTime) {
             message.warning('不可预定过去时间～');
             return false;
