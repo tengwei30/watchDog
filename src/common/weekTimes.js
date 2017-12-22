@@ -4,7 +4,7 @@ let nowWeekDays = []
 const during = 1800000;
 let startTime = '';
 for(let i = 0; i < 14; i++) {
-    startTime = new Date(moment().day(i+1).format('YYYY-MM-DD 10:00:00')).getTime();
+    startTime = new Date(moment().day(i+1).format('YYYY/MM/DD 10:00:00')).getTime();
     nowWeekDays[i] = {
         'day': moment().day(i+1).format('YYYY-MM-DD'),
         'week':`星期${weeks[i]}`,
