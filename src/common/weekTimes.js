@@ -1,12 +1,13 @@
 import moment, { duration } from 'moment';
-const weeks = ['一','二','三','四','五','六','天','一','二','三','四','五','六','天']
+const weeks = ['天','一','二','三','四','五','六','天','一','二','三','四','五','六']
 let nowWeekDays = []
 const during = 1800000;
 let startTime = '';
+console.log(moment().day(0).format('YYYY-MM-DD'))
 for(let i = 0; i < 14; i++) {
-    startTime = new Date(moment().day(i+1).format('YYYY/MM/DD 10:00:00')).getTime();
+    startTime = new Date(moment().day(i).format('YYYY/MM/DD 10:00:00')).getTime();
     nowWeekDays[i] = {
-        'day': moment().day(i+1).format('YYYY-MM-DD'),
+        'day': moment().day(i).format('YYYY-MM-DD'),
         'week':`星期${weeks[i]}`,
         'times': [] 
     };
@@ -19,7 +20,7 @@ function getWeekDays() {
     if (!localStorage.getItem('weekDays')) {
         localStorage.setItem('weekDays', JSON.stringify(nowWeekDays))
     }else {
-       if(JSON.parse(localStorage.getItem('weekDays')) !== moment().day(1).format('YYYY-MM-DD')){
+       if(JSON.parse(localStorage.getItem('weekDays')) !== moment().day(0).format('YYYY-MM-DD')){
             localStorage.setItem('weekDays', JSON.stringify(nowWeekDays))
         }
     }
