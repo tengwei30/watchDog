@@ -8,18 +8,17 @@ import _ from 'lodash';
 class ChartStore {
     @observable defaultTimes = getWeekDays()
     @observable responseData = []
-    @observable roomId = null
     @observable times = times
     @observable switchTime = true;
 
     @computed
-    get columnData() {
+    get columnData() { // 对时间块进行处理
         let weeks = []
         mobx.toJS(this.defaultTimes).forEach((item, i) => {
             item['times'].forEach((singleItem, j) => {
                 if (_.isEmpty(this.responseData)) {
                     singleItem.used = false
-                }else {
+                } else {
                     mobx.toJS(this.responseData).forEach( (val, k) => {
                         if(singleItem.time >= val['beginTime'] && singleItem.time < val['endTime'] ) {
                             singleItem.used = true;
@@ -34,17 +33,21 @@ class ChartStore {
     }
 
     @action
-    setresponseData(data) {
-        this.responseData = data
+    setresponseData (res) {
+        console.info(res)
+        for (let i in res.data) {
+            res.data[i].beginTime = new Date(moment(res.data[i].beginTime)).getTime()
+            res.data[i].endTime = new Date(moment(res.data[i].endTime)).getTime()
+        }
+        const url = window.location.href;
+        const num = window.location.href.lastIndexOf('/') + 1
+        if(res.roomId && res.roomId == url.slice(num)) {
+           this.responseData = res.data
+        }
     }
 
     @action
-    setRoomId(num) {
-        this.roomId = num
-    }
-    
-    @action
-    setSwitchTime (boolean) {
+    setSwitchTime (boolean) { // 本周/下周
         this.switchTime = boolean
     }
 }

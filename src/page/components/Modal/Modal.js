@@ -17,6 +17,12 @@ class showModal extends React.Component{
     constructor(props) {
         super(props);
     }
+    componentDidMount() {
+        autorun(() => {
+            this.props.modalStore.modalData
+            this.props.modalStore.isModalData
+        })
+    }
     handleSubmit = (e) => {
         let body = {
             userId: '',
@@ -27,21 +33,15 @@ class showModal extends React.Component{
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 if(values.description === '') {
-                    notification.open({
-                        message:'使用者和描述不能为空~'
-                    })
+                    message.warning('使用者和描述不能为空~')
                     return false;
                 }
                 if(new Date(moment(values.endTime)).getTime() < new Date(moment(values.beginTime)).getTime()) {
-                    notification.open({
-                        message:'结束时间不能大于开始时间~'
-                    })
+                    message.warning("结束时间不能大于开始时间~")
                     return false; 
                 }
                 if(new Date().getTime() > new Date(moment(values.endTime)).getTime()) {
-                    notification.open({
-                        message:'开始时间不能大于当前时间~'
-                    })
+                    message.warning("开始时间不能大于当前时间~")
                     return false;  
                 }
                 let data = Object.assign(body,values)
@@ -53,18 +53,15 @@ class showModal extends React.Component{
                         'Content-Type': 'application/json;charset=utf8'
                     }
                 }).then(res => {
-                    notification.open({
-                        message: '创建成功',
-                    });
+                    message.success('创建成功~')
                     setTimeout(() => {
-                        this.props.handleCancel()
+                        this.handleCancel()
                     },300)
+                    this.props.form.resetFields()
                 }).catch(err => {
-                    notification.open({
-                        message: '创建失败',
-                    });
+                    message.error('创建失败~')
                     setTimeout(() => {
-                        this.props.handleCancel()
+                        this.handleCancel()
                     },300)
                     console.warn(err)
                 })
@@ -84,9 +81,8 @@ class showModal extends React.Component{
     DeleteMessage = () => {
         const roomId = this.props.roomId;
         const stateId = this.props.modalStore.isModalData.id;
-        const _this = this;
         setTimeout(() => {
-            _this.props.handleCancel()
+            this.handleCancel()
         },10)
         confirm({
             title: '你确定要删除此条会议记录?',
@@ -95,9 +91,7 @@ class showModal extends React.Component{
             cancelText: '取消',
             onOk() {
                 axios.delete(`${APIs.DELETE_ROOM_STATUS}${roomId}/state/${stateId}`).then(res => {
-                    notification.open({
-                        message: '删除成功',
-                    });
+                    message.success('删除成功')
                 }).catch(err => {
                     console.warn('error --->', err)
                 })
@@ -105,7 +99,12 @@ class showModal extends React.Component{
             onCancel() {
                 console.log('onCancel')
             },
-          });
+        });
+        this.props.form.resetFields()
+    }
+    handleCancel = () => {
+        this.props.modalStore.setVisible(false)
+        this.props.form.resetFields()
     }
     _renderForm () {
         const { getFieldDecorator } = this.props.form;
@@ -163,11 +162,10 @@ class showModal extends React.Component{
                         )}
                     </FormItem>
                 </Col>
-                
             </FormItem>
             <FormItem>
                 {getFieldDecorator('description',{
-                    initialValue: isModalData.description ? isModalData.description : '' 
+                    initialValue: isModalData.description ? isModalData.description : ''
                 })(
                     <TextArea style={{resize:'none'}} rows={2} placeholder="请添写使用者和主题" />
                 )}
@@ -195,19 +193,17 @@ class showModal extends React.Component{
                     )
                 }
             </FormItem>
-            
         </Form>
         )
     }
     render() {
-        
-        const { isModalData, modalData, visible } = this.props.modalStore
+        const { isModalData, modalData, visible,desc } = this.props.modalStore
         return (
             <Modal
                 visible={ visible }
                 title= {isModalData.id ? "修改预定" : "新建预定"}
                 onOk={this.handleOk}
-                onCancel={this.props.handleCancel}
+                onCancel={this.handleCancel}
                 footer={[]}
                 className="showModal"
             >

@@ -1,13 +1,10 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-// import {autorun} from 'mobx';
+import {autorun} from 'mobx';
 import { Layout, Menu, Icon, Select } from 'antd';
 import './pageLayout.css';
-import APIs from '../../common/api.js';
-import axios from 'axios';
 import logoSmall from '../../../assets/images/logoSmall.png';
 import avatar from '../../../assets/images/avatar.png';
-
 const Option = Select.Option;
 const { Sider, Content } = Layout
 
@@ -16,36 +13,24 @@ const { Sider, Content } = Layout
 export default class PageLayout extends React.Component {
     constructor(props) {
         super(props);
-        setTimeout(() => {
-            axios({
-                method: 'GET',
-                url: APIs.GET_ROOMS,
-                header: {
-                    'Content-Type': 'application/json;charset=utf8'
-                }
-            }).then(res => {
-                this.props.menuStore.setMenuList(res.data)
-            }).catch(err => {
-                console.warn('error -> ', err)
-            })
-        },300)
     };
+    componentDidMount () {
+        autorun(() => {
+            this.props.menuStore.MenuList()
+        })
+    }
     SelectChange = (value) => { // 选择会议室还是面试间
         this.props.menuStore.setSelectStr(value);
-        sessionStorage.setItem('SelectStr',value)
-        sessionStorage.setItem('title',value)
     }
     onSkip = (item) => { // 跳转
-        this.props.chartStore.setRoomId(item.key)
+        this.props.menuStore.setRoomId(item.key)
         this.props.router.push({pathname:`index/meet/${item.key}`});
-        setTimeout(() => {   
+        setTimeout(() => { // 跳转完时间默认置为本周  
             this.props.chartStore.setSwitchTime(true)
         },10)
-        localStorage.setItem('key',item.key)
-        sessionStorage.setItem('title',item.item.props.children.props.children)
     }
     render () {
-        const {children} = this.props;
+        const {children, menuStore} = this.props;
         return (
             <Layout>
                 <Sider style={{background:'#fff'}}>
@@ -68,13 +53,14 @@ export default class PageLayout extends React.Component {
                     >
                         <Option value="meeting">会议室</Option>
                         <Option value="face">面试室</Option>
+                        <Option value="voice">录音室</Option>
                     </Select>
                     <Menu mode="inline" onClick = { this.onSkip }>
                         {
-                            this.props.menuStore.ListData.map((item) => {
-                                if(localStorage.getItem('key') == item.id) {
+                            menuStore.ListData.map((item) => {
+                                if(menuStore.RoomDetail.id == item.id) {
                                     return(
-                                        <Menu.Item key={ item.id } className="trigger Layoutactive">
+                                        <Menu.Item key={item.id} className="trigger Layoutactive">
                                             <span>{ item.name }</span>
                                         </Menu.Item> 
                                     )

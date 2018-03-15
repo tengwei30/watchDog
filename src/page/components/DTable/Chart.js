@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Icon,notification } from 'antd';
+import { Button, Icon, message } from 'antd';
 import { inject, observer } from 'mobx-react';
 import { autorun } from 'mobx';
 import getWeekDays from '../../../common/weekTimes';
@@ -16,9 +16,6 @@ import './Chart.css';
 export default class DTable extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {
-            key: 1
-        }
     }
     componentDidMount() {
         autorun(() => {
@@ -29,63 +26,28 @@ export default class DTable extends React.Component {
     _roomStates () { // 设置io同步
         let _this = this
         socket.on('roomStates',function(data) {
-            for (let i in data.states) {
-                data.states[i].beginTime = new Date(moment(data.states[i].beginTime)).getTime()
-                data.states[i].endTime = new Date(moment(data.states[i].endTime)).getTime()
-            }
-            _this.props.chartStore.setresponseData(data.states)
+                _this.props.chartStore.setresponseData(data)
+
         })
     }
     _getRoomOrder () {
         axios(`${APIs.GET_ROOM_ORDERS}${this.props.params.id}`)
             .then(res => {
-            for (let i in res.data) {
-                res.data[i].beginTime = new Date(moment(res.data[i].beginTime)).getTime()
-                res.data[i].endTime = new Date(moment(res.data[i].endTime)).getTime()
-            }
-            return res.data
-            })
-            .then(data => {
-                this.props.chartStore.setresponseData(data)
+            this.props.chartStore.setresponseData(res.data)
             })
             .catch(err => {
                 console.warn('error ---> ', err)
             })
     }
-    shouldComponentUpdate(nextProps,nextState) {
-        if(!nextState.visible && nextState.key === 0) {
-            this.setState({
-                weeks: getWeekDays()
-            },() => {
-                this._getRoomOrder(this.props.params.id)
-            })
-        }
-        this.setState({
-            key:1
-        })
-        return true
-    }
     showCreateRoom = (item,val) => {
-        const nowTime = new Date(moment().format('YYYY-MM-DD HH:mm:ss')).getTime()
+        const nowTime = new Date(moment().format('YYYY-MM-DD HH:mm:ss')).getTime() - 1800000
         if(val.time < nowTime) {
-            notification.open({
-                message: '不可预定过去的时间～',
-            });
+            message.warning('不可预定过去时间～');
             return false;
         }
         this.props.modalStore.setVisible(true)
         this.props.modalStore.setmodalData(item)
         this.props.modalStore.setisModalData(val)
-        
-    }
-    handleCancel = () => {  // 隐藏弹窗
-        this.props.modalStore.setVisible(false)
-        this.setState({
-            key: 0
-        });
-    }
-    switch = () => { // 本周/下周
-        this.props.chartStore.setSwitchTime(!this.props.chartStore.switchTime)
     }
     _renderColumn() {
         return (
@@ -141,7 +103,7 @@ export default class DTable extends React.Component {
                                                                 }
                                                             </div>
                                                         </div>
-                                                    ) 
+                                                    )
                                                 } else {
                                                     return (
                                                         <div key={val.time} className="timeSingleBlock">
@@ -220,10 +182,6 @@ export default class DTable extends React.Component {
                 {/*------ header -----*/}
                 <Header />
                 {/*------- room -------*/}
-                <div className="btnDate">
-                    <p>今天：{moment().locale('zh-cn').format('dddd')}</p>
-                    <p><Button type="primary" onClick={this.switch}>{this.props.chartStore.switchTime ? '下周' : '本周' }</Button></p>
-                </div>
                 <div className="Chart">
                     <div className="CtContent">
                         <div className="calendar">
@@ -232,7 +190,6 @@ export default class DTable extends React.Component {
                     </div>
                     {/*------- dialog --------*/}
                     <DModal
-                        handleCancel = {this.handleCancel}
                         roomId = {this.props.params.id}
                     />
                 </div>

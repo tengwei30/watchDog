@@ -11,33 +11,12 @@ class Login extends React.Component {
 	}
 	handleSubmit = (e) => {
         const data = {
-            "email": e.target.email.value,
-            "nickname": e.target.password.value
-        }
-        if(!data) {
-            notification.warning({
-                message: '邮箱或者姓名不对'
-            })
-            return false
+            "email": 'admin@guanghe.tv',
+            "nickname": 'admin'
         }
         this.props.router.push({pathname:'/index'})
         sessionStorage.setItem('nickname',data.nickname)
         sessionStorage.setItem('email',data.email)
-        // axios({
-        //     url:APIs.POST_SIGNUP,
-        //     method: "POST",
-        //     data:data
-        // }).then(res => {
-        //     sessionStorage.setItem('nickname',res.data.nickname)
-        //     sessionStorage.setItem('email',res.data.email)
-        //     sessionStorage.setItem('userid',res.data._id)
-        //     this.props.router.push({pathname:'/index'})
-        // }).catch(err => {
-        //     notification.warning({
-        //         message: '邮箱或者姓名不对'
-        //     })
-        //     console.warn("error -> ",err)
-        // })
 	}
 	render() {
         const { getFieldDecorator } = this.props.form;
@@ -46,9 +25,9 @@ class Login extends React.Component {
                 <Form style={Style.formBg} onSubmit = { this.handleSubmit } className="login-form">
                     <h2 style={Style.Headtitle}>
                         <img src={LoginMain} />
-                        <h6 style={{color:'#ccc',letterSpacing:10,paddingBottom:15}}>房间预定系统</h6>
+                        <h6 style={{color:'#ccc',letterSpacing:10,paddingBottom:15}}>会议室预定</h6>
                     </h2>
-                    <FormItem>
+                    {/* <FormItem>
                         {getFieldDecorator('email', {
                             rules: [{ required: true, message: '请输入邮箱!' }],
                         })(
@@ -61,10 +40,10 @@ class Login extends React.Component {
                         })(
                             <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} type="text" placeholder="请输入姓名" />
                         )}
-                    </FormItem>
+                    </FormItem> */}
                     <FormItem>
                         <Button type="primary" htmlType="submit" className="login-form-button" style={{width:'100%'}}>
-                            提交
+                            进入
                         </Button>
                     </FormItem>
                 </Form>
