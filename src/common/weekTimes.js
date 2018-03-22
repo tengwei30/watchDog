@@ -11,7 +11,7 @@ for(let i = 0; i < 14; i++) {
         'week':`星期${weeks[i]}`,
         'times': [] 
     };
-    for(let j=0;j< 18;j++) {
+    for(let j=0;j< 20;j++) {
         nowWeekDays[i]['times'][j] = {'used': false,'time': startTime + during * j} 
     }
 }
